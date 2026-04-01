@@ -7,7 +7,7 @@
     "light": "#17C08D",
     "dark": "#0A7A57"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "https://axnpay.com.br/assets/favicon.png",
   "navigation": {
     "groups": [
       {
