@@ -1,20 +1,20 @@
 ---
 title: "Quickstart"
-description: "Integracao rapida com a API AXNPAY (CASHIN e CASHOUT)."
+description: "Integração rápida com a API AXNPAY (CASHIN e CASHOUT)."
 ---
 
 ## 1. Gere suas chaves
 
 No painel AXNPAY, gere um par de chaves:
 
-- `pk_live_prod_*` (publica)
+- `pk_live_prod_*` (pública)
 - `sk_live_prod_*` (secreta)
 
 <Warning>
   Nunca exponha a `sk_live_prod_*` no frontend. Use apenas no backend.
 </Warning>
 
-## 2. Crie uma cobranca PIX
+## 2. Crie uma cobrança PIX
 
 ```bash cURL
 curl -X POST "https://api.axnpay.com.br/v1/integrations/create-transaction" \
@@ -35,11 +35,11 @@ curl -X POST "https://api.axnpay.com.br/v1/integrations/create-transaction" \
 
 Resposta esperada (resumo):
 
-- `transactionId` (UUID publico)
+- `transactionId` (UUID público)
 - `status` inicial (`PENDING`)
-- `pixCode` (codigo copia e cola)
+- `pixCode` (código copia e cola)
 
-## 3. Consulte status da transacao
+## 3. Consulte status da transação
 
 ```bash cURL
 curl "https://api.axnpay.com.br/v1/integrations/list-transactions?transactionId=77823bb5-3d84-4cbf-a2a4-43230cc3b1d1" \
@@ -65,17 +65,17 @@ curl -X POST "https://api.axnpay.com.br/v1/integrations/create-cashout" \
 Notas:
 
 - Taxa fixa de saque: `R$ 5.00`
-- Valor liquido enviado: `amount - 5.00`
-- Minimo: `amount > 5.00`
+- Valor líquido enviado: `amount - 5.00`
+- Mínimo: `amount > 5.00`
 
-## 5. Use idempotencia sempre
+## 5. Use idempotência sempre
 
 `create-transaction`:
 - Campo: `referenceId`
-- Escopo: unico por usuario + tipo `CASHIN`
+- Escopo: único por usuário + tipo `CASHIN`
 
 `create-cashout`:
 - Campo: `idempotencyKey`
-- Escopo: unico por usuario + tipo `CASHOUT`
+- Escopo: único por usuário + tipo `CASHOUT`
 
-Se voce repetir a mesma chave, a API devolve a mesma transacao sem duplicar operacao.
+Se você repetir a mesma chave, a API devolve a mesma transação sem duplicar operação.

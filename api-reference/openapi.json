@@ -3,7 +3,7 @@
   "info": {
     "title": "AXNPAY Integrations API",
     "version": "2026-04-01",
-    "description": "Referencia publica para integracao de cobranca, saque e conciliacao."
+    "description": "Referência pública para integração de cobrança, saque e conciliação."
   },
   "servers": [
     {
@@ -21,7 +21,7 @@
         "tags": [
           "Integrations"
         ],
-        "summary": "Gerar transacao PIX",
+        "summary": "Gerar transação PIX",
         "requestBody": {
           "required": true,
           "content": {
@@ -34,7 +34,7 @@
         },
         "responses": {
           "201": {
-            "description": "Transacao criada",
+            "description": "Transação criada",
             "content": {
               "application/json": {
                 "schema": {
@@ -63,7 +63,7 @@
         "tags": [
           "Integrations"
         ],
-        "summary": "Listar transacoes",
+        "summary": "Listar transações",
         "parameters": [
           {
             "name": "id",
@@ -136,7 +136,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Transacao unica ou lista paginada",
+            "description": "Transação única ou lista paginada",
             "content": {
               "application/json": {
                 "schema": {
@@ -399,7 +399,7 @@
     },
     "responses": {
       "BadRequest": {
-        "description": "Requisicao invalida",
+        "description": "Requisição inválida",
         "content": {
           "application/json": {
             "schema": {
@@ -409,7 +409,7 @@
         }
       },
       "Unauthorized": {
-        "description": "Nao autenticado",
+        "description": "Não autenticado",
         "content": {
           "application/json": {
             "schema": {
@@ -419,7 +419,7 @@
         }
       },
       "Forbidden": {
-        "description": "Operacao nao permitida",
+        "description": "Operação não permitida",
         "content": {
           "application/json": {
             "schema": {
@@ -429,7 +429,7 @@
         }
       },
       "Conflict": {
-        "description": "Conflito de idempotencia",
+        "description": "Conflito de idempotência",
         "content": {
           "application/json": {
             "schema": {
@@ -439,7 +439,7 @@
         }
       },
       "NotFound": {
-        "description": "Recurso nao encontrado",
+        "description": "Recurso não encontrado",
         "content": {
           "application/json": {
             "schema": {
@@ -449,7 +449,7 @@
         }
       },
       "Unprocessable": {
-        "description": "Regra de negocio invalida",
+        "description": "Regra de negócio inválida",
         "content": {
           "application/json": {
             "schema": {

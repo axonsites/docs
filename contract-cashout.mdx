@@ -1,14 +1,14 @@
 ---
 title: "Regras de contrato"
-description: "Contrato de integracao para transferencias e saques (CASHOUT)."
+description: "Contrato de integração para transferências e saques (CASHOUT)."
 ---
 
-## Regras de negocio
+## Regras de negócio
 
 - Taxa fixa de saque: `R$ 5.00`.
-- Valor minimo: `amount > 5.00`.
-- Validacao de saldo disponivel antes de criar saque.
-- Saque pode ser bloqueado por politica da conta.
+- Valor mínimo: `amount > 5.00`.
+- Validação de saldo disponível antes de criar saque.
+- Saque pode ser bloqueado por política da conta.
 
 ## Chaves PIX aceitas
 
@@ -18,14 +18,14 @@ description: "Contrato de integracao para transferencias e saques (CASHOUT)."
 - `PHONE`
 - `EVP`
 
-## Idempotencia
+## Idempotência
 
-Use `idempotencyKey` (UUID) em toda solicitacao de saque para evitar duplicidade.
+Use `idempotencyKey` (UUID) em toda solicitação de saque para evitar duplicidade.
 
 ## Comprovante
 
-Quando concluido, a transacao retorna `receiptUrl` HTML:
+Quando concluído, a transação retorna `receiptUrl` HTML:
 
 - Exemplo: `https://api.axnpay.com.br/v1/transactions/{id}/receipt.html`
 
-Esse endpoint deve abrir como pagina HTML (nao download via blob).
+Esse endpoint deve abrir como página HTML (não download via blob).

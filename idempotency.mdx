@@ -1,38 +1,38 @@
 ---
-title: "Idempotencia"
-description: "Previna criacao duplicada de cobrancas e saques."
+title: "Idempotência"
+description: "Previna criação duplicada de cobranças e saques."
 ---
 
 ## Quando usar
 
-Sempre envie uma chave unica por operacao quando houver risco de retry por timeout/rede.
+Sempre envie uma chave única por operação quando houver risco de retry por timeout/rede.
 
 ## CASHIN: `referenceId`
 
 Endpoint: `POST /v1/integrations/create-transaction`
 
 - Campo: `referenceId` (UUID)
-- Escopo: unico por `userId` + `type = CASHIN`
-- Se repetir: retorna a mesma transacao criada anteriormente
+- Escopo: único por `userId` + `type = CASHIN`
+- Se repetir: retorna a mesma transação criada anteriormente
 
-Se a chave ja existir em outro contexto, a API responde `409 Conflict`.
+Se a chave já existir em outro contexto, a API responde `409 Conflict`.
 
 ## CASHOUT: `idempotencyKey`
 
 Endpoint: `POST /v1/integrations/create-cashout`
 
 - Campo: `idempotencyKey` (UUID)
-- Escopo: unico por `userId` + `type = CASHOUT`
+- Escopo: único por `userId` + `type = CASHOUT`
 - Se repetir: retorna o mesmo saque
 
-Se a chave ja existir em outro contexto, a API responde `409 Conflict`.
+Se a chave já existir em outro contexto, a API responde `409 Conflict`.
 
-## Padrao recomendado
+## Padrão recomendado
 
-1. Gere UUID no seu backend no momento da intencao de pagamento/saque.
+1. Gere UUID no seu backend no momento da intenção de pagamento/saque.
 2. Salve essa chave no seu banco junto com o pedido.
 3. Em retry, reutilize exatamente a mesma chave.
-4. Nunca gere nova chave para o mesmo evento de negocio.
+4. Nunca gere nova chave para o mesmo evento de negócio.
 
 ## Exemplo
 
@@ -44,6 +44,6 @@ Se a chave ja existir em outro contexto, a API responde `409 Conflict`.
 }
 ```
 
-## Observacao importante
+## Observação importante
 
-Idempotencia evita duplicidade de criacao na AXNPAY, mas voce ainda deve ter idempotencia no seu proprio sistema para fechamento de pedido e conciliacao.
+Idempotência evita duplicidade de criação na AXNPAY, mas você ainda deve ter idempotência no seu próprio sistema para fechamento de pedido e conciliação.

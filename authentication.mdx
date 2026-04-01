@@ -1,9 +1,9 @@
 ---
-title: "Autenticacao"
+title: "Autenticação"
 description: "Como autenticar chamadas da Integrations API com Secret Key."
 ---
 
-## Header obrigatorio
+## Header obrigatório
 
 Todos os endpoints em `/v1/integrations/*` exigem:
 
@@ -12,7 +12,7 @@ Authorization: Bearer sk_live_prod_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 <Warning>
-  A Integrations API aceita apenas `sk_live_prod_*`. Nao use `pk_live_prod_*` para chamadas de servidor.
+  A Integrations API aceita apenas `sk_live_prod_*`. Não use `pk_live_prod_*` para chamadas de servidor.
 </Warning>
 
 ## Exemplo em cURL
@@ -43,13 +43,13 @@ console.log(data);
 
 | HTTP | Motivo | Mensagem comum |
 | --- | --- | --- |
-| `401` | Header ausente ou malformado | `Authorization header ausente ou invalido.` |
-| `401` | Prefixo incorreto | `Chave invalida. Use sua Secret Key (sk_live_prod_...).` |
-| `401` | Chave revogada/invalida | `Secret key invalida ou revogada.` |
+| `401` | Header ausente ou malformado | `Authorization header ausente ou inválido.` |
+| `401` | Prefixo incorreto | `Chave inválida. Use sua Secret Key (sk_live_prod_...).` |
+| `401` | Chave revogada/inválida | `Secret key inválida ou revogada.` |
 
-## Boas praticas
+## Boas práticas
 
-1. Guarde a `sk_live_prod_*` apenas em variavel de ambiente do backend.
-2. Nao inclua a chave em app mobile/web.
-3. Tenha rotacao de chave e revogue chaves antigas.
-4. Use idempotencia para evitar duplicidade em reenvios de request.
+1. Guarde a `sk_live_prod_*` apenas em variável de ambiente do backend.
+2. Não inclua a chave em app mobile/web.
+3. Tenha rotação de chave e revogue chaves antigas.
+4. Use idempotência para evitar duplicidade em reenvios de request.

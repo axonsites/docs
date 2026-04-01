@@ -1,29 +1,29 @@
 ---
-title: "Introducao"
+title: "Introdução"
 description: "Guia principal da Integrations API da AXNPAY."
 ---
 
 <Tip>
-  Base URL de producao: <code>https://api.axnpay.com.br/v1</code>
+  Base URL de produção: <code>https://api.axnpay.com.br/v1</code>
 </Tip>
 
 ## Guia de APIs
 
-Use esta documentacao para integrar:
+Use esta documentação para integrar:
 
-- Geracao de cobranca (CASHIN)
-- Consulta de transacoes
-- Transferencias/saques (CASHOUT)
+- Geração de cobrança (CASHIN)
+- Consulta de transações
+- Transferências/saques (CASHOUT)
 - Consulta de saldo
-- Webhooks de atualizacao
+- Webhooks de atualização
 
 ## Fluxo recomendado
 
 <AccordionGroup>
-  <Accordion title="1. Autenticacao" icon="key">
+  <Accordion title="1. Autenticação" icon="key">
     Gere sua <code>sk_live_prod_*</code> no painel e use no header <code>Authorization: Bearer ...</code>.
   </Accordion>
-  <Accordion title="2. Gerar transacao PIX" icon="qrcode">
+  <Accordion title="2. Gerar transação PIX" icon="qrcode">
     Chame <code>POST /v1/integrations/create-transaction</code> e exiba o <code>pixCode</code> para pagamento.
   </Accordion>
   <Accordion title="3. Acompanhar status" icon="list-check">
@@ -34,17 +34,17 @@ Use esta documentacao para integrar:
   </Accordion>
 </AccordionGroup>
 
-## Acesso rapido
+## Acesso rápido
 
 <CardGroup cols={2}>
-  <Card title="Gerar transacao PIX" icon="bolt" href="/api-reference/endpoint/create-transaction">
-    Endpoint principal para criar cobrancas.
+  <Card title="Gerar transação PIX" icon="bolt" href="/api-reference/endpoint/create-transaction">
+    Endpoint principal para criar cobranças.
   </Card>
-  <Card title="Listar transacoes" icon="list" href="/api-reference/endpoint/list-transactions">
-    Filtros, paginacao e consulta pontual por UUID.
+  <Card title="Listar transações" icon="list" href="/api-reference/endpoint/list-transactions">
+    Filtros, paginação e consulta pontual por UUID.
   </Card>
-  <Card title="Solicitar transferencia" icon="money-bills" href="/api-reference/endpoint/create-cashout">
-    Crie saques com idempotencia e validacao de saldo.
+  <Card title="Solicitar transferência" icon="money-bills" href="/api-reference/endpoint/create-cashout">
+    Crie saques com idempotência e validação de saldo.
   </Card>
   <Card title="Consultar saldo" icon="wallet" href="/api-reference/endpoint/get-balance">
     Retorna disponivel, reservas e total sacado.

@@ -1,18 +1,18 @@
 ---
-title: "Webhooks de transacao"
-description: "Eventos de transacao e validacao de assinatura."
+title: "Webhooks de transação"
+description: "Eventos de transação e validação de assinatura."
 ---
 
-## Visao geral
+## Visão geral
 
-A AXNPAY envia webhooks assinados para notificar mudancas de status de transacao.
+A AXNPAY envia webhooks assinados para notificar mudanças de status de transação.
 
 Headers enviados:
 
 - `X-Webhook-Event`
 - `X-Webhook-Signature` (HMAC SHA-256 em hexadecimal)
 
-## Eventos disponiveis
+## Eventos disponíveis
 
 - `transaction.created`
 - `transaction.completed`
@@ -41,7 +41,7 @@ Headers enviados:
 }
 ```
 
-## Validacao da assinatura (Node.js)
+## Validação da assinatura (Node.js)
 
 ```js
 import crypto from "crypto";
@@ -64,7 +64,7 @@ function validateWebhookSignature(rawBody, signature, secret) {
 
 ## Endpoints de gerenciamento de webhook
 
-Esses endpoints usam autenticacao JWT de usuario (painel), nao `sk_live_prod_*`:
+Esses endpoints usam autenticação JWT de usuário (painel), não `sk_live_prod_*`:
 
 - `GET /v1/user/webhooks/events`
 - `POST /v1/user/webhooks`

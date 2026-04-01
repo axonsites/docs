@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "AXNPAY API",
   "colors": {
-    "primary": "#00A86B",
-    "light": "#17C08D",
-    "dark": "#0A7A57"
+    "primary": "#022B7A",
+    "light": "#1A4AA2",
+    "dark": "#011F5B"
   },
   "favicon": "https://axnpay.com.br/assets/favicon.png",
   "navigation": {
@@ -19,7 +19,7 @@
         ]
       },
       {
-        "group": "Guia de implementacao",
+        "group": "Guia de implementação",
         "pages": [
           "quickstart",
           "authentication",
@@ -27,7 +27,7 @@
         ]
       },
       {
-        "group": "Transacoes",
+        "group": "Transações",
         "pages": [
           "contract-transactions",
           "api-reference/endpoint/create-transaction",
@@ -36,7 +36,7 @@
         ]
       },
       {
-        "group": "Transferencias",
+        "group": "Transferências",
         "pages": [
           "contract-cashout",
           "api-reference/endpoint/create-cashout",
@@ -47,7 +47,7 @@
         ]
       },
       {
-        "group": "Referencia",
+        "group": "Referência",
         "pages": [
           "api-reference/introduction",
           "idempotency",
@@ -77,13 +77,13 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
+        "label": "Suporte",
         "href": "mailto:suporte@axnpay.com.br"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
+      "label": "Acessar Painel",
       "href": "https://gestao.axnpay.com.br"
     }
   },
