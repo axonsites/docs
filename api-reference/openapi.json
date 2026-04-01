@@ -1,216 +1,850 @@
 {
-  "openapi": "3.1.0",
+  "openapi": "3.0.3",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
+    "title": "AXNPAY Integrations API",
+    "version": "2026-04-01",
+    "description": "Referencia publica para integracao de cobranca, saque e conciliacao."
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "https://api.axnpay.com.br"
     }
   ],
   "security": [
     {
-      "bearerAuth": []
+      "secretKeyAuth": []
     }
   ],
   "paths": {
-    "/plants": {
-      "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
+    "/v1/integrations/create-transaction": {
       "post": {
-        "description": "Creates a new plant in the store",
+        "tags": [
+          "Integrations"
+        ],
+        "summary": "Criar transacao (CASHIN)",
         "requestBody": {
-          "description": "Plant to add to the store",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/CreateTransactionRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
-          "200": {
-            "description": "plant response",
+          "201": {
+            "description": "Transacao criada",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Plant"
+                  "$ref": "#/components/schemas/TransactionPublic"
                 }
               }
             }
           },
           "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
           }
         }
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+    "/v1/integrations/list-transactions": {
+      "get": {
+        "tags": [
+          "Integrations"
+        ],
+        "summary": "Listar transacoes ou buscar por ID",
         "parameters": [
           {
             "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transactionId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/TxType"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/TxStatus"
+            }
+          },
+          {
+            "name": "origin",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/TxOrigin"
+            }
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 15
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
+          "200": {
+            "description": "Transacao unica ou lista paginada",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/TransactionPublic"
+                    },
+                    {
+                      "$ref": "#/components/schemas/PaginatedTransactions"
+                    }
+                  ]
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           }
         }
       }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
+    },
+    "/v1/integrations/create-cashout": {
       "post": {
-        "description": "Information about a new plant added to the store",
+        "tags": [
+          "Integrations"
+        ],
+        "summary": "Criar saque (CASHOUT)",
         "requestBody": {
-          "description": "Plant added to the store",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/CreateCashoutRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Saque criado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CashoutCreatedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unprocessable"
+          },
+          "502": {
+            "$ref": "#/components/responses/BadGateway"
+          }
+        }
+      }
+    },
+    "/v1/integrations/approve-cashout": {
+      "post": {
+        "tags": [
+          "Integrations"
+        ],
+        "summary": "Aprovar cashout pendente (legado)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveCashoutRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
+            "description": "Saque retornado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionPublic"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "502": {
+            "$ref": "#/components/responses/BadGateway"
+          }
+        }
+      }
+    },
+    "/v1/integrations/cashout": {
+      "get": {
+        "tags": [
+          "Integrations"
+        ],
+        "summary": "Listar saques",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/TxStatus"
+            }
+          },
+          {
+            "name": "origin",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/TxOrigin"
+            }
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 15
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de saques",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedTransactions"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/v1/integrations/cashout/{id}": {
+      "get": {
+        "tags": [
+          "Integrations"
+        ],
+        "summary": "Consultar saque por id ou transactionId",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saque encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionPublic"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/integrations/balance": {
+      "get": {
+        "tags": [
+          "Integrations"
+        ],
+        "summary": "Consultar saldo",
+        "responses": {
+          "200": {
+            "description": "Saldo consolidado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
     }
   },
   "components": {
-    "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
+    "securitySchemes": {
+      "secretKeyAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "sk_live_prod_*",
+        "description": "Use sua secret key: Bearer sk_live_prod_..."
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Requisicao invalida",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
           }
         }
       },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
+      "Unauthorized": {
+        "description": "Nao autenticado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Operacao nao permitida",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflito de idempotencia",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Recurso nao encontrado",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Unprocessable": {
+        "description": "Regra de negocio invalida",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "BadGateway": {
+        "description": "Falha no provedor externo",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "TxStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING",
+          "PROCESSING",
+          "COMPLETED",
+          "FAILED",
+          "REVERSED",
+          "CANCELLED",
+          "CHARGEBACK"
+        ]
+      },
+      "TxType": {
+        "type": "string",
+        "enum": [
+          "CASHIN",
+          "CASHOUT",
+          "INFRACTION"
+        ]
+      },
+      "TxOrigin": {
+        "type": "string",
+        "enum": [
+          "API",
+          "PAINEL",
+          "APP"
+        ]
+      },
+      "PixKeyType": {
+        "type": "string",
+        "enum": [
+          "CPF",
+          "CNPJ",
+          "EMAIL",
+          "PHONE",
+          "EVP"
+        ]
+      },
+      "CreateTransactionRequest": {
+        "type": "object",
+        "required": [
+          "amount"
+        ],
+        "properties": {
+          "amount": {
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 1000000
           },
+          "description": {
+            "type": "string"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "clientName": {
+            "type": "string"
+          },
+          "clientEmail": {
+            "type": "string",
+            "format": "email"
+          },
+          "clientPhone": {
+            "type": "string"
+          },
+          "clientCpf": {
+            "type": "string"
+          },
+          "pixKeyType": {
+            "$ref": "#/components/schemas/PixKeyType"
+          },
+          "pixKey": {
+            "type": "string"
+          },
+          "referenceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "acquirer": {
+            "type": "string",
+            "enum": [
+              "woovi",
+              "mercadopago"
+            ],
+            "default": "woovi"
+          },
+          "paymentMethod": {
+            "type": "string"
+          },
+          "cardToken": {
+            "type": "string"
+          },
+          "installments": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12,
+            "default": 1
+          }
+        }
+      },
+      "CreateCashoutRequest": {
+        "type": "object",
+        "required": [
+          "amount",
+          "pixKey",
+          "pixKeyType"
+        ],
+        "properties": {
+          "amount": {
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 1000000
+          },
+          "pixKey": {
+            "type": "string"
+          },
+          "pixKeyType": {
+            "$ref": "#/components/schemas/PixKeyType"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ApproveCashoutRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "transactionId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "anyOf": [
           {
             "required": [
               "id"
+            ]
+          },
+          {
+            "required": [
+              "transactionId"
+            ]
+          }
+        ]
+      },
+      "TransactionPublic": {
+        "type": "object",
+        "properties": {
+          "transactionId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TxStatus"
+          },
+          "type": {
+            "$ref": "#/components/schemas/TxType"
+          },
+          "source": {
+            "type": "string"
+          },
+          "origin": {
+            "$ref": "#/components/schemas/TxOrigin"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "feeAmount": {
+            "type": "number"
+          },
+          "finalAmount": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "productName": {
+            "type": "string",
+            "nullable": true
+          },
+          "pixCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "pixKeyType": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PixKeyType"
+              }
             ],
+            "nullable": true
+          },
+          "pixKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "clientName": {
+            "type": "string",
+            "nullable": true
+          },
+          "clientEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "clientPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "clientCpf": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalId": {
+            "type": "string",
+            "nullable": true
+          },
+          "endToEndId": {
+            "type": "string",
+            "nullable": true
+          },
+          "receiptUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "transactionDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "paidAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "CashoutCreatedResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TransactionPublic"
+          },
+          {
             "type": "object",
             "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
+              "_info": {
+                "type": "string"
               }
             }
           }
         ]
       },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
+      "PaginationMeta": {
         "type": "object",
         "properties": {
+          "current_page": {
+            "type": "integer"
+          },
+          "per_page": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "last_page": {
+            "type": "integer"
+          },
+          "from": {
+            "type": "integer"
+          },
+          "to": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "current_page",
+          "per_page",
+          "total",
+          "last_page",
+          "from",
+          "to"
+        ]
+      },
+      "PaginatedTransactions": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TransactionPublic"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ]
+      },
+      "BalanceResponse": {
+        "type": "object",
+        "properties": {
+          "disponivel": {
+            "type": "number"
+          },
+          "reservaFinanceira": {
+            "type": "number"
+          },
+          "saldoBloqueado": {
+            "type": "number"
+          },
+          "saquePendente": {
+            "type": "number"
+          },
+          "totalDisponivel": {
+            "type": "number"
+          },
+          "totalSacado": {
+            "type": "number"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "disponivel",
+          "reservaFinanceira",
+          "saldoBloqueado",
+          "saquePendente",
+          "totalDisponivel",
+          "totalSacado",
+          "updatedAt"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "integer"
+          },
           "error": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string"
           },
           "message": {
             "type": "string"
+          },
+          "detail": {
+            "type": "object",
+            "additionalProperties": true
           }
-        }
-      }
-    },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+        },
+        "required": [
+          "statusCode",
+          "error",
+          "message"
+        ]
       }
     }
   }

@@ -1,33 +1,35 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: "Introduction"
+description: "Referencia oficial da Integrations API da AXNPAY."
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+## Base URL
 
-## Welcome
+`https://api.axnpay.com.br/v1`
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## Autenticacao da Integrations API
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+Todas as rotas em `/v1/integrations/*` usam:
 
-## Authentication
-
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
-
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+```http
+Authorization: Bearer sk_live_prod_xxxxxxxxxxxxxxxxx
 ```
+
+<Warning>
+  Nunca exponha sua `sk_live_prod_*` no frontend.
+</Warning>
+
+## IDs de transacao
+
+- `transactionId` (UUID): identificador publico recomendado para conciliacao.
+- `id` inteiro: legado, mantido para compatibilidade.
+
+## Escopo desta referencia
+
+Esta secao cobre endpoints para:
+
+- Criacao de cobranca (`CASHIN`)
+- Consulta de transacoes
+- Criacao e consulta de saque (`CASHOUT`)
+- Consulta de saldo
+- Fluxo de aprovacao legado de cashout

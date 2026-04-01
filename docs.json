@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "AXNPAY Developers",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#00A86B",
+    "light": "#17C08D",
+    "dark": "#0A7A57"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -18,31 +18,10 @@
             "pages": [
               "index",
               "quickstart",
-              "development"
-            ]
-          },
-          {
-            "group": "Customization",
-            "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "authentication",
+              "idempotency",
+              "webhooks",
+              "playground"
             ]
           }
         ]
@@ -51,18 +30,21 @@
         "tab": "API reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Overview",
             "pages": [
               "api-reference/introduction"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Integration endpoints",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/endpoint/create-transaction",
+              "api-reference/endpoint/list-transactions",
+              "api-reference/endpoint/create-cashout",
+              "api-reference/endpoint/approve-cashout",
+              "api-reference/endpoint/list-cashouts",
+              "api-reference/endpoint/get-cashout",
+              "api-reference/endpoint/get-balance"
             ]
           }
         ]
@@ -71,33 +53,33 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Base API",
+          "href": "https://api.axnpay.com.br/v1",
+          "icon": "terminal"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Painel",
+          "href": "https://gestao.axnpay.com.br",
+          "icon": "book-open-cover"
         }
       ]
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "https://gestao.axnpay.com.br/assets/logo-axnpay.png",
+    "dark": "https://gestao.axnpay.com.br/assets/logo-axnpay.png"
   },
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:suporte@axnpay.com.br"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "Abrir Painel",
+      "href": "https://gestao.axnpay.com.br"
     }
   },
   "contextual": {
@@ -114,9 +96,7 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/axonsites/docs"
     }
   }
 }

@@ -1,97 +1,51 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "AXNPAY Integrations"
+description: "Documentacao oficial para integrar cobrancas, saques e webhooks."
 ---
 
-## Setting up
+<Tip>
+  Base URL de producao: <code>https://api.axnpay.com.br/v1</code>
+</Tip>
 
-Get your documentation site up and running in minutes.
+## Comece aqui
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Gere sua chave, crie a primeira transacao e valide o fluxo em minutos.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Autenticacao" icon="key" href="/authentication">
+    Como usar Bearer com <code>sk_live_prod_*</code> de forma segura.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Idempotencia" icon="fingerprint" href="/idempotency">
+    Evite transacoes duplicadas com <code>referenceId</code> e <code>idempotencyKey</code>.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Webhooks" icon="webhook" href="/webhooks">
+    Receba mudancas de status e valide assinatura HMAC SHA-256.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## Fluxos principais
 
-Everything you need to create world-class documentation.
+<AccordionGroup>
+  <Accordion title="CASHIN (cobranca)" icon="money-bills">
+    1. Chame <code>POST /v1/integrations/create-transaction</code>.
+    2. Salve o <code>transactionId</code> retornado.
+    3. Consulte status em <code>GET /v1/integrations/list-transactions?transactionId=...</code>.
+    4. Aguarde <code>COMPLETED</code> para considerar pagamento confirmado.
+  </Accordion>
+  <Accordion title="CASHOUT (saque)" icon="arrow-right-arrow-left">
+    1. Chame <code>POST /v1/integrations/create-cashout</code>.
+    2. O saque e enviado para a Woovi com aprovacao imediata.
+    3. Consulte em <code>GET /v1/integrations/cashout/:id</code>.
+    4. Quando concluido, <code>receiptUrl</code> aponta para comprovante HTML.
+  </Accordion>
+  <Accordion title="Conciliação" icon="list-check">
+    Use sempre <code>transactionId</code> (UUID) no seu sistema. O ID inteiro e legado.
+  </Accordion>
+</AccordionGroup>
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+## API reference e playground
 
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
+<Card title="Abrir API reference" icon="terminal" href="/api-reference/introduction">
+  Teste os endpoints direto no playground com seu Bearer token.
 </Card>

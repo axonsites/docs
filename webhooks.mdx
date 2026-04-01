@@ -1,0 +1,75 @@
+---
+title: "Webhooks"
+description: "Eventos de transacao e validacao de assinatura."
+---
+
+## Visao geral
+
+A AXNPAY envia webhooks assinados para notificar mudancas de status de transacao.
+
+Headers enviados:
+
+- `X-Webhook-Event`
+- `X-Webhook-Signature` (HMAC SHA-256 em hexadecimal)
+
+## Eventos disponiveis
+
+- `transaction.created`
+- `transaction.completed`
+- `transaction.failed`
+- `transaction.reversed`
+- `transaction.cancelled`
+- `transaction.chargeback`
+- `cashout.created`
+- `cashout.processing`
+- `cashout.completed`
+- `cashout.failed`
+- `cashout.reversed`
+
+## Payload base
+
+```json
+{
+  "event": "transaction.completed",
+  "timestamp": "2026-04-01T22:15:40.000Z",
+  "data": {
+    "id": 115,
+    "referenceId": "e1de94c1-5692-48e1-a334-24b367ad76ff",
+    "status": "COMPLETED",
+    "type": "CASHOUT"
+  }
+}
+```
+
+## Validacao da assinatura (Node.js)
+
+```js
+import crypto from "crypto";
+
+function validateWebhookSignature(rawBody, signature, secret) {
+  const expected = crypto.createHmac("sha256", secret).update(rawBody).digest("hex");
+  const sigBuf = Buffer.from(signature || "", "utf8");
+  const expBuf = Buffer.from(expected, "utf8");
+  if (sigBuf.length !== expBuf.length) return false;
+  return crypto.timingSafeEqual(sigBuf, expBuf);
+}
+```
+
+## Requisitos do seu endpoint
+
+1. Aceitar `POST application/json`.
+2. Responder `2xx` rapidamente.
+3. Persistir o evento antes de processar regra pesada.
+4. Ignorar evento duplicado com base em `event + referenceId + timestamp` (ou chave equivalente).
+
+## Endpoints de gerenciamento de webhook
+
+Esses endpoints usam autenticacao JWT de usuario (painel), nao `sk_live_prod_*`:
+
+- `GET /v1/user/webhooks/events`
+- `POST /v1/user/webhooks`
+- `GET /v1/user/webhooks`
+- `GET /v1/user/webhooks/:id`
+- `PATCH /v1/user/webhooks/:id`
+- `DELETE /v1/user/webhooks/:id`
+- `POST /v1/user/webhooks/:id/revalidate`

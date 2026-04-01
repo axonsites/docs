@@ -1,0 +1,33 @@
+---
+title: "Playground"
+description: "Como testar endpoints de integracao direto na documentacao."
+---
+
+## Como usar
+
+1. Abra qualquer endpoint na aba **API reference**.
+2. Clique em **Authorize**.
+3. Informe:
+   `Bearer sk_live_prod_SEU_TOKEN`
+4. Execute os requests diretamente no playground.
+
+## Ordem recomendada de testes
+
+1. `GET /v1/integrations/balance`
+2. `POST /v1/integrations/create-transaction`
+3. `GET /v1/integrations/list-transactions?transactionId=...`
+4. `POST /v1/integrations/create-cashout`
+5. `GET /v1/integrations/cashout/:id`
+
+## Dicas para teste sem dor
+
+- Use valores pequenos (`1.00`, `5.00`, `20.00`).
+- Gere UUID real para `referenceId` e `idempotencyKey`.
+- Guarde `transactionId` em log para conciliacao.
+- Em cashout, envie `pixKeyType` valido: `CPF`, `CNPJ`, `EMAIL`, `PHONE`, `EVP`.
+
+## Seguranca no playground
+
+<Warning>
+  O playground roda no navegador. Use ambiente controlado para testes e rotacione chaves se necessario.
+</Warning>

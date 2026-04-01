@@ -1,0 +1,55 @@
+---
+title: "Autenticacao"
+description: "Como autenticar chamadas da Integrations API com Secret Key."
+---
+
+## Header obrigatorio
+
+Todos os endpoints em `/v1/integrations/*` exigem:
+
+```http
+Authorization: Bearer sk_live_prod_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+<Warning>
+  A Integrations API aceita apenas `sk_live_prod_*`. Nao use `pk_live_prod_*` para chamadas de servidor.
+</Warning>
+
+## Exemplo em cURL
+
+```bash cURL
+curl "https://api.axnpay.com.br/v1/integrations/balance" \
+  -H "Authorization: Bearer sk_live_prod_SEU_TOKEN"
+```
+
+## Exemplo em Node.js
+
+```js
+const response = await fetch("https://api.axnpay.com.br/v1/integrations/balance", {
+  headers: {
+    Authorization: `Bearer ${process.env.AXNPAY_SECRET_KEY}`,
+  },
+});
+
+if (!response.ok) {
+  throw new Error(`Erro HTTP ${response.status}`);
+}
+
+const data = await response.json();
+console.log(data);
+```
+
+## Erros comuns
+
+| HTTP | Motivo | Mensagem comum |
+| --- | --- | --- |
+| `401` | Header ausente ou malformado | `Authorization header ausente ou invalido.` |
+| `401` | Prefixo incorreto | `Chave invalida. Use sua Secret Key (sk_live_prod_...).` |
+| `401` | Chave revogada/invalida | `Secret key invalida ou revogada.` |
+
+## Boas praticas
+
+1. Guarde a `sk_live_prod_*` apenas em variavel de ambiente do backend.
+2. Nao inclua a chave em app mobile/web.
+3. Tenha rotacao de chave e revogue chaves antigas.
+4. Use idempotencia para evitar duplicidade em reenvios de request.
