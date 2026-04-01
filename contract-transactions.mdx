@@ -1,0 +1,28 @@
+---
+title: "Regras de contrato"
+description: "Contrato de integracao para transacoes de entrada (CASHIN)."
+---
+
+## Identificadores
+
+- `transactionId` e o ID publico (UUID) para conciliacao.
+- `id` inteiro e legado e nao deve ser usado como chave principal no cliente.
+
+## Status de transacao
+
+- `PENDING`: criada e aguardando pagamento.
+- `PROCESSING`: em processamento interno/provedor.
+- `COMPLETED`: pagamento confirmado.
+- `FAILED`: falhou.
+- `REVERSED`: estornada.
+- `CANCELLED`: cancelada.
+- `CHARGEBACK`: chargeback/disputa.
+
+## Campo `pixCode`
+
+Para PIX, a API retorna `pixCode` (copia e cola EMV).  
+Considere transacao paga apenas quando `status = COMPLETED`.
+
+## Privacidade de dados
+
+A resposta da Integrations API foi reduzida para expor apenas dados necessarios ao integrador.

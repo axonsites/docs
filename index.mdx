@@ -1,51 +1,52 @@
 ---
-title: "AXNPAY Integrations"
-description: "Documentacao oficial para integrar cobrancas, saques e webhooks."
+title: "Introducao"
+description: "Guia principal da Integrations API da AXNPAY."
 ---
 
 <Tip>
   Base URL de producao: <code>https://api.axnpay.com.br/v1</code>
 </Tip>
 
-## Comece aqui
+## Guia de APIs
 
-<CardGroup cols={2}>
-  <Card title="Quickstart" icon="rocket" href="/quickstart">
-    Gere sua chave, crie a primeira transacao e valide o fluxo em minutos.
-  </Card>
-  <Card title="Autenticacao" icon="key" href="/authentication">
-    Como usar Bearer com <code>sk_live_prod_*</code> de forma segura.
-  </Card>
-  <Card title="Idempotencia" icon="fingerprint" href="/idempotency">
-    Evite transacoes duplicadas com <code>referenceId</code> e <code>idempotencyKey</code>.
-  </Card>
-  <Card title="Webhooks" icon="webhook" href="/webhooks">
-    Receba mudancas de status e valide assinatura HMAC SHA-256.
-  </Card>
-</CardGroup>
+Use esta documentacao para integrar:
 
-## Fluxos principais
+- Geracao de cobranca (CASHIN)
+- Consulta de transacoes
+- Transferencias/saques (CASHOUT)
+- Consulta de saldo
+- Webhooks de atualizacao
+
+## Fluxo recomendado
 
 <AccordionGroup>
-  <Accordion title="CASHIN (cobranca)" icon="money-bills">
-    1. Chame <code>POST /v1/integrations/create-transaction</code>.
-    2. Salve o <code>transactionId</code> retornado.
-    3. Consulte status em <code>GET /v1/integrations/list-transactions?transactionId=...</code>.
-    4. Aguarde <code>COMPLETED</code> para considerar pagamento confirmado.
+  <Accordion title="1. Autenticacao" icon="key">
+    Gere sua <code>sk_live_prod_*</code> no painel e use no header <code>Authorization: Bearer ...</code>.
   </Accordion>
-  <Accordion title="CASHOUT (saque)" icon="arrow-right-arrow-left">
-    1. Chame <code>POST /v1/integrations/create-cashout</code>.
-    2. O saque e enviado para a Woovi com aprovacao imediata.
-    3. Consulte em <code>GET /v1/integrations/cashout/:id</code>.
-    4. Quando concluido, <code>receiptUrl</code> aponta para comprovante HTML.
+  <Accordion title="2. Gerar transacao PIX" icon="qrcode">
+    Chame <code>POST /v1/integrations/create-transaction</code> e exiba o <code>pixCode</code> para pagamento.
   </Accordion>
-  <Accordion title="Conciliação" icon="list-check">
-    Use sempre <code>transactionId</code> (UUID) no seu sistema. O ID inteiro e legado.
+  <Accordion title="3. Acompanhar status" icon="list-check">
+    Consulte por <code>transactionId</code> no endpoint <code>GET /v1/integrations/list-transactions</code>.
+  </Accordion>
+  <Accordion title="4. Saques e comprovante" icon="arrow-right-arrow-left">
+    Para saque, use <code>POST /v1/integrations/create-cashout</code>. Quando concluir, use o <code>receiptUrl</code> HTML.
   </Accordion>
 </AccordionGroup>
 
-## API reference e playground
+## Acesso rapido
 
-<Card title="Abrir API reference" icon="terminal" href="/api-reference/introduction">
-  Teste os endpoints direto no playground com seu Bearer token.
-</Card>
+<CardGroup cols={2}>
+  <Card title="Gerar transacao PIX" icon="bolt" href="/api-reference/endpoint/create-transaction">
+    Endpoint principal para criar cobrancas.
+  </Card>
+  <Card title="Listar transacoes" icon="list" href="/api-reference/endpoint/list-transactions">
+    Filtros, paginacao e consulta pontual por UUID.
+  </Card>
+  <Card title="Solicitar transferencia" icon="money-bills" href="/api-reference/endpoint/create-cashout">
+    Crie saques com idempotencia e validacao de saldo.
+  </Card>
+  <Card title="Consultar saldo" icon="wallet" href="/api-reference/endpoint/get-balance">
+    Retorna disponivel, reservas e total sacado.
+  </Card>
+</CardGroup>

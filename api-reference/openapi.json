@@ -21,7 +21,7 @@
         "tags": [
           "Integrations"
         ],
-        "summary": "Criar transacao (CASHIN)",
+        "summary": "Gerar transacao PIX",
         "requestBody": {
           "required": true,
           "content": {
@@ -63,7 +63,7 @@
         "tags": [
           "Integrations"
         ],
-        "summary": "Listar transacoes ou buscar por ID",
+        "summary": "Listar transacoes",
         "parameters": [
           {
             "name": "id",
@@ -169,7 +169,7 @@
         "tags": [
           "Integrations"
         ],
-        "summary": "Criar saque (CASHOUT)",
+        "summary": "Solicitar transferencia",
         "requestBody": {
           "required": true,
           "content": {
@@ -217,7 +217,7 @@
         "tags": [
           "Integrations"
         ],
-        "summary": "Aprovar cashout pendente (legado)",
+        "summary": "Aprovar saque (legado)",
         "requestBody": {
           "required": true,
           "content": {
@@ -330,7 +330,7 @@
         "tags": [
           "Integrations"
         ],
-        "summary": "Consultar saque por id ou transactionId",
+        "summary": "Consultar saque",
         "parameters": [
           {
             "name": "id",

@@ -1,52 +1,57 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "AXNPAY Developers",
+  "name": "AXNPAY API",
   "colors": {
-    "primary": "#00A86B",
-    "light": "#17C08D",
-    "dark": "#0A7A57"
+    "primary": "#16A34A",
+    "light": "#22C55E",
+    "dark": "#15803D"
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "tabs": [
+    "groups": [
       {
-        "tab": "Guides",
-        "groups": [
-          {
-            "group": "Getting started",
-            "pages": [
-              "index",
-              "quickstart",
-              "authentication",
-              "idempotency",
-              "webhooks",
-              "playground"
-            ]
-          }
+        "group": "Guia de APIs",
+        "pages": [
+          "index",
+          "support-whatsapp",
+          "support-instagram"
         ]
       },
       {
-        "tab": "API reference",
-        "groups": [
-          {
-            "group": "Overview",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Integration endpoints",
-            "pages": [
-              "api-reference/endpoint/create-transaction",
-              "api-reference/endpoint/list-transactions",
-              "api-reference/endpoint/create-cashout",
-              "api-reference/endpoint/approve-cashout",
-              "api-reference/endpoint/list-cashouts",
-              "api-reference/endpoint/get-cashout",
-              "api-reference/endpoint/get-balance"
-            ]
-          }
+        "group": "Guia de implementacao",
+        "pages": [
+          "quickstart",
+          "authentication",
+          "webhooks"
+        ]
+      },
+      {
+        "group": "Transacoes",
+        "pages": [
+          "contract-transactions",
+          "api-reference/endpoint/create-transaction",
+          "api-reference/endpoint/list-transactions",
+          "api-reference/endpoint/get-transaction"
+        ]
+      },
+      {
+        "group": "Transferencias",
+        "pages": [
+          "contract-cashout",
+          "api-reference/endpoint/create-cashout",
+          "api-reference/endpoint/list-cashouts",
+          "api-reference/endpoint/get-cashout",
+          "api-reference/endpoint/get-balance",
+          "api-reference/endpoint/approve-cashout"
+        ]
+      },
+      {
+        "group": "Referencia",
+        "pages": [
+          "api-reference/introduction",
+          "idempotency",
+          "playground"
         ]
       }
     ],
@@ -78,7 +83,7 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Abrir Painel",
+      "label": "Dashboard",
       "href": "https://gestao.axnpay.com.br"
     }
   },
