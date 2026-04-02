@@ -8,6 +8,17 @@ description: "Contrato de integração para transações de entrada (CASHIN)."
 - `transactionId` é o ID público (UUID) para conciliação.
 - `id` inteiro é legado e não deve ser usado como chave principal no cliente.
 
+## Payload público de criação (PIX)
+
+No endpoint `POST /v1/integrations/create-transaction`, o contrato público usa:
+
+- `amount` (obrigatório)
+- `description`, `productName`
+- `clientName`, `clientEmail`, `clientPhone`, `clientCpf`
+- `referenceId` (idempotência)
+
+Campos internos como `acquirer`, `pixKey` e `pixKeyType` não fazem parte do contrato público de cobrança PIX.
+
 ## Status de transação
 
 - `PENDING`: criada e aguardando pagamento.

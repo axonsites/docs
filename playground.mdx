@@ -24,7 +24,8 @@ description: "Como testar endpoints de integração direto na documentação."
 - Use valores pequenos (`1.00`, `5.00`, `20.00`).
 - Gere UUID real para `referenceId` e `idempotencyKey`.
 - Guarde `transactionId` em log para conciliação.
-- Em cashout, envie `pixKeyType` válido: `CPF`, `CNPJ`, `EMAIL`, `PHONE`, `EVP`.
+- Em `create-transaction` (PIX), não envie `acquirer`, `pixKey` ou `pixKeyType`.
+- Em `create-cashout`, envie `pixKeyType` válido: `CPF`, `CNPJ`, `EMAIL`, `PHONE`, `EVP`.
 
 ## Segurança no playground
 

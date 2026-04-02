@@ -21,13 +21,23 @@
         "tags": [
           "Integrations"
         ],
-        "summary": "Gerar transação PIX",
+        "summary": "Gerar cobrança PIX",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateTransactionRequest"
+              },
+              "example": {
+                "amount": 20,
+                "description": "Pedido #1234",
+                "productName": "Plano Pro",
+                "clientName": "Matteo Augusto",
+                "clientEmail": "axonaxolote@gmail.com",
+                "clientPhone": "11999999999",
+                "clientCpf": "52998224725",
+                "referenceId": "77823bb5-3d84-4cbf-a2a4-43230cc3b1d1"
               }
             }
           }
@@ -39,6 +49,32 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TransactionPublic"
+                },
+                "example": {
+                  "transactionId": "77823bb5-3d84-4cbf-a2a4-43230cc3b1d1",
+                  "status": "PENDING",
+                  "type": "CASHIN",
+                  "source": "PIX",
+                  "origin": "API",
+                  "amount": 20,
+                  "feeAmount": 1.15,
+                  "finalAmount": 18.85,
+                  "description": "Pedido #1234",
+                  "productName": "Plano Pro",
+                  "pixCode": "00020101021226800014br.gov.bcb.pix...",
+                  "pixKeyType": null,
+                  "pixKey": null,
+                  "clientName": "Matteo Augusto",
+                  "clientEmail": "axonaxolote@gmail.com",
+                  "clientPhone": "11999999999",
+                  "clientCpf": "52998224725",
+                  "externalId": "7f1b51df-2f3f-4c73-8e9f-fd31df9f7e77",
+                  "endToEndId": null,
+                  "receiptUrl": null,
+                  "transactionDate": "2026-04-01T20:46:16.748Z",
+                  "paidAt": null,
+                  "createdAt": "2026-04-01T20:46:16.748Z",
+                  "updatedAt": "2026-04-01T20:46:16.748Z"
                 }
               }
             }
@@ -517,56 +553,38 @@
           "amount": {
             "type": "number",
             "minimum": 0.01,
-            "maximum": 1000000
+            "maximum": 1000000,
+            "description": "Valor bruto da cobrança em reais (ex.: 20.00)."
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "description": "Descrição livre da cobrança."
           },
           "productName": {
-            "type": "string"
+            "type": "string",
+            "description": "Nome do produto/serviço."
           },
           "clientName": {
-            "type": "string"
+            "type": "string",
+            "description": "Nome do pagador."
           },
           "clientEmail": {
             "type": "string",
-            "format": "email"
+            "format": "email",
+            "description": "E-mail do pagador."
           },
           "clientPhone": {
-            "type": "string"
+            "type": "string",
+            "description": "Telefone do pagador."
           },
           "clientCpf": {
-            "type": "string"
-          },
-          "pixKeyType": {
-            "$ref": "#/components/schemas/PixKeyType"
-          },
-          "pixKey": {
-            "type": "string"
+            "type": "string",
+            "description": "CPF/CNPJ do pagador (somente números)."
           },
           "referenceId": {
             "type": "string",
-            "format": "uuid"
-          },
-          "acquirer": {
-            "type": "string",
-            "enum": [
-              "woovi",
-              "mercadopago"
-            ],
-            "default": "woovi"
-          },
-          "paymentMethod": {
-            "type": "string"
-          },
-          "cardToken": {
-            "type": "string"
-          },
-          "installments": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 12,
-            "default": 1
+            "format": "uuid",
+            "description": "Chave de idempotência para CASHIN. Reutilize em retries da mesma cobrança."
           }
         }
       },

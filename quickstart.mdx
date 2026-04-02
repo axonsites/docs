@@ -28,8 +28,7 @@ curl -X POST "https://api.axnpay.com.br/v1/integrations/create-transaction" \
     "clientEmail": "axonaxolote@gmail.com",
     "clientPhone": "11999999999",
     "clientCpf": "52998224725",
-    "referenceId": "77823bb5-3d84-4cbf-a2a4-43230cc3b1d1",
-    "acquirer": "woovi"
+    "referenceId": "77823bb5-3d84-4cbf-a2a4-43230cc3b1d1"
   }'
 ```
 
@@ -38,6 +37,10 @@ Resposta esperada (resumo):
 - `transactionId` (UUID público)
 - `status` inicial (`PENDING`)
 - `pixCode` (código copia e cola)
+
+<Info>
+  Para cobrança PIX, não envie `acquirer`, `pixKey` ou `pixKeyType`.
+</Info>
 
 ## 3. Consulte status da transação
 

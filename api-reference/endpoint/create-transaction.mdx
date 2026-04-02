@@ -3,4 +3,9 @@ title: "Gerar transação PIX"
 openapi: "POST /v1/integrations/create-transaction"
 ---
 
-Cria uma cobrança e retorna `transactionId` público e `pixCode` quando aplicável.
+Cria uma cobrança PIX e retorna o `transactionId` público + `pixCode` (copia e cola EMV).
+
+<Info>
+  No endpoint de cobrança, envie apenas os campos de cobrança/pagador.
+  Campos internos como `acquirer`, `pixKey` e `pixKeyType` não fazem parte do contrato público.
+</Info>
