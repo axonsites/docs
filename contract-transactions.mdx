@@ -15,9 +15,14 @@ No endpoint `POST /v1/integrations/create-transaction`, o contrato público usa:
 - `amount` (obrigatório)
 - `description`, `productName`
 - `clientName`, `clientEmail`, `clientPhone`, `clientCpf`
+- `tracking_parameters` com `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`
 - `referenceId` (idempotência)
 
 Campos internos como `acquirer`, `pixKey` e `pixKeyType` não fazem parte do contrato público de cobrança PIX.
+
+## Tracking e atribuição
+
+Se enviados na criação da cobrança, os UTMs ficam salvos na transação e também são reenviados nos webhooks da AXNPAY dentro de `trackingParameters`.
 
 ## Status de transação
 

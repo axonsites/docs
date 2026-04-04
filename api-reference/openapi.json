@@ -37,6 +37,13 @@
                 "clientEmail": "axonaxolote@gmail.com",
                 "clientPhone": "11999999999",
                 "clientCpf": "52998224725",
+                "tracking_parameters": {
+                  "utm_source": "meta_ads",
+                  "utm_medium": "cpc",
+                  "utm_campaign": "black_friday",
+                  "utm_content": "criativo_1",
+                  "utm_term": "checkout"
+                },
                 "referenceId": "77823bb5-3d84-4cbf-a2a4-43230cc3b1d1"
               }
             }
@@ -61,6 +68,13 @@
                   "finalAmount": 18.85,
                   "description": "Pedido #1234",
                   "productName": "Plano Pro",
+                  "trackingParameters": {
+                    "utm_source": "meta_ads",
+                    "utm_medium": "cpc",
+                    "utm_campaign": "black_friday",
+                    "utm_content": "criativo_1",
+                    "utm_term": "checkout"
+                  },
                   "pixCode": "00020101021226800014br.gov.bcb.pix...",
                   "pixKeyType": null,
                   "pixKey": null,
@@ -581,6 +595,28 @@
             "type": "string",
             "description": "CPF/CNPJ do pagador (somente números)."
           },
+          "tracking_parameters": {
+            "type": "object",
+            "description": "Parâmetros opcionais de tracking para conciliação e repasse via webhook.",
+            "additionalProperties": false,
+            "properties": {
+              "utm_source": {
+                "type": "string"
+              },
+              "utm_medium": {
+                "type": "string"
+              },
+              "utm_campaign": {
+                "type": "string"
+              },
+              "utm_content": {
+                "type": "string"
+              },
+              "utm_term": {
+                "type": "string"
+              }
+            }
+          },
           "referenceId": {
             "type": "string",
             "format": "uuid",
@@ -674,6 +710,28 @@
           "productName": {
             "type": "string",
             "nullable": true
+          },
+          "trackingParameters": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": false,
+            "properties": {
+              "utm_source": {
+                "type": "string"
+              },
+              "utm_medium": {
+                "type": "string"
+              },
+              "utm_campaign": {
+                "type": "string"
+              },
+              "utm_content": {
+                "type": "string"
+              },
+              "utm_term": {
+                "type": "string"
+              }
+            }
           },
           "pixCode": {
             "type": "string",

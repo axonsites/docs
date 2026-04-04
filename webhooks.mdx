@@ -36,10 +36,21 @@ Headers enviados:
     "id": 115,
     "referenceId": "e1de94c1-5692-48e1-a334-24b367ad76ff",
     "status": "COMPLETED",
-    "type": "CASHOUT"
+    "type": "CASHOUT",
+    "trackingParameters": {
+      "utm_source": "meta_ads",
+      "utm_medium": "cpc",
+      "utm_campaign": "black_friday",
+      "utm_content": "criativo_1",
+      "utm_term": "checkout"
+    }
   }
 }
 ```
+
+<Info>
+  Quando a cobrança for criada com `tracking_parameters`, a AXNPAY repassa esses dados no webhook dentro de `trackingParameters`.
+</Info>
 
 ## Validação da assinatura (Node.js)
 

@@ -25,6 +25,7 @@ description: "Como testar endpoints de integração direto na documentação."
 - Gere UUID real para `referenceId` e `idempotencyKey`.
 - Guarde `transactionId` em log para conciliação.
 - Em `create-transaction` (PIX), não envie `acquirer`, `pixKey` ou `pixKeyType`.
+- Se precisar atribuição, envie `tracking_parameters` com seus UTMs no `create-transaction`.
 - Em `create-cashout`, envie `pixKeyType` válido: `CPF`, `CNPJ`, `EMAIL`, `PHONE`, `EVP`.
 
 ## Segurança no playground
