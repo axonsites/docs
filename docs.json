@@ -23,6 +23,7 @@
         "pages": [
           "quickstart",
           "authentication",
+          "stripe-card",
           "webhooks"
         ]
       },
@@ -31,6 +32,8 @@
         "pages": [
           "contract-transactions",
           "api-reference/endpoint/create-transaction",
+          "api-reference/endpoint/get-stripe-config",
+          "api-reference/endpoint/get-stripe-checkout-session",
           "api-reference/endpoint/list-transactions",
           "api-reference/endpoint/get-transaction"
         ]

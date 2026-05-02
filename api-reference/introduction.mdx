@@ -1,13 +1,13 @@
 ---
-title: "Introdução da API"
-description: "Referência oficial da Integrations API da AXNPAY."
+title: "Introducao da API"
+description: "Referencia oficial da Integrations API da AXNPAY."
 ---
 
 ## Base URL
 
 `https://api.axnpay.com.br/v1`
 
-## Autenticação da Integrations API
+## Autenticacao da Integrations API
 
 Todas as rotas em `/v1/integrations/*` usam:
 
@@ -21,15 +21,17 @@ Authorization: Bearer sk_live_prod_xxxxxxxxxxxxxxxxx
 
 ## IDs de transacao
 
-- `transactionId` (UUID): identificador público recomendado para conciliação.
+- `transactionId` (UUID): identificador publico recomendado para conciliacao.
 - `id` inteiro: legado, mantido para compatibilidade.
 
 ## Escopo desta referencia
 
-Esta seção cobre endpoints para:
+Esta secao cobre endpoints para:
 
-- Criação de cobrança (`CASHIN`)
-- Consulta de transações
-- Criação e consulta de saque (`CASHOUT`)
-- Consulta de saldo
-- Fluxo de aprovação legado de cashout
+- criacao de cobranca PIX e cartao Stripe
+- consulta de transacoes
+- configuracao publica da Stripe para o frontend
+- consulta e sincronizacao de Checkout Session Stripe
+- criacao e consulta de saque (`CASHOUT`)
+- consulta de saldo
+- fluxo legado de aprovacao de cashout

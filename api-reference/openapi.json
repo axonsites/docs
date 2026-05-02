@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "AXNPAY Integrations API",
-    "version": "2026-04-01",
-    "description": "Referência pública para integração de cobrança, saque e conciliação."
+    "version": "2026-05-02",
+    "description": "Referencia publica para integracao de cobrancas, saques, conciliacao e checkout de cartao via Stripe."
   },
   "servers": [
     {
@@ -21,7 +21,7 @@
         "tags": [
           "Integrations"
         ],
-        "summary": "Gerar cobrança PIX",
+        "summary": "Gerar cobranca",
         "requestBody": {
           "required": true,
           "content": {
@@ -30,65 +30,96 @@
                 "$ref": "#/components/schemas/CreateTransactionRequest"
               },
               "example": {
-                "amount": 20,
-                "description": "Pedido #1234",
-                "productName": "Plano Pro",
-                "clientName": "Matteo Augusto",
-                "clientEmail": "axonaxolote@gmail.com",
-                "clientPhone": "11999999999",
-                "clientCpf": "52998224725",
+                "amount": 150,
+                "acquirer": "stripe",
+                "currency": "brl",
+                "productName": "Pedido #1001",
+                "description": "Plano Premium",
+                "clientName": "Maria",
+                "clientEmail": "maria@example.com",
+                "referenceId": "9e4a5fb4-61bb-4b38-9bb6-b7029b74bdf6",
+                "checkoutUiMode": "hosted",
+                "paymentMethodTypes": [
+                  "card",
+                  "link"
+                ],
+                "successUrl": "https://merchant.example.com/checkout/success",
+                "cancelUrl": "https://merchant.example.com/checkout/cancel",
                 "tracking_parameters": {
-                  "utm_source": "meta_ads",
+                  "utm_source": "google",
                   "utm_medium": "cpc",
-                  "utm_campaign": "black_friday",
-                  "utm_content": "criativo_1",
-                  "utm_term": "checkout"
-                },
-                "referenceId": "77823bb5-3d84-4cbf-a2a4-43230cc3b1d1"
+                  "utm_campaign": "launch"
+                }
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Transação criada",
+            "description": "Cobranca criada",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TransactionPublic"
+                  "$ref": "#/components/schemas/CreateTransactionResponse"
                 },
                 "example": {
-                  "transactionId": "77823bb5-3d84-4cbf-a2a4-43230cc3b1d1",
+                  "transactionId": "9e4a5fb4-61bb-4b38-9bb6-b7029b74bdf6",
                   "status": "PENDING",
                   "type": "CASHIN",
-                  "source": "PIX",
+                  "source": "CARD",
                   "origin": "API",
-                  "amount": 20,
-                  "feeAmount": 1.15,
-                  "finalAmount": 18.85,
-                  "description": "Pedido #1234",
-                  "productName": "Plano Pro",
+                  "amount": 150,
+                  "feeAmount": 0,
+                  "finalAmount": 150,
+                  "description": "Plano Premium",
+                  "productName": "Pedido #1001",
                   "trackingParameters": {
-                    "utm_source": "meta_ads",
+                    "utm_source": "google",
                     "utm_medium": "cpc",
-                    "utm_campaign": "black_friday",
-                    "utm_content": "criativo_1",
-                    "utm_term": "checkout"
+                    "utm_campaign": "launch"
                   },
-                  "pixCode": "00020101021226800014br.gov.bcb.pix...",
+                  "pixCode": null,
                   "pixKeyType": null,
                   "pixKey": null,
-                  "clientName": "Matteo Augusto",
-                  "clientEmail": "axonaxolote@gmail.com",
-                  "clientPhone": "11999999999",
-                  "clientCpf": "52998224725",
-                  "externalId": "7f1b51df-2f3f-4c73-8e9f-fd31df9f7e77",
+                  "clientName": "Maria",
+                  "clientEmail": "maria@example.com",
+                  "clientPhone": null,
+                  "clientCpf": null,
+                  "externalId": "cs_live_xxx",
+                  "gatewayId": null,
                   "endToEndId": null,
                   "receiptUrl": null,
-                  "transactionDate": "2026-04-01T20:46:16.748Z",
+                  "transactionDate": "2026-05-02T18:46:16.748Z",
                   "paidAt": null,
-                  "createdAt": "2026-04-01T20:46:16.748Z",
-                  "updatedAt": "2026-04-01T20:46:16.748Z"
+                  "createdAt": "2026-05-02T18:46:16.748Z",
+                  "updatedAt": "2026-05-02T18:46:16.748Z",
+                  "acquirer": {
+                    "id": 3,
+                    "name": "Stripe",
+                    "slug": "stripe"
+                  },
+                  "balanceImpact": true,
+                  "settlementMode": "internal",
+                  "stripeCheckout": {
+                    "sessionId": "cs_live_xxx",
+                    "uiMode": "hosted",
+                    "url": "https://checkout.stripe.com/c/pay/cs_live_xxx",
+                    "clientSecret": null,
+                    "publishableKey": null,
+                    "accountDisplayName": "AXON SERVICOS FINANCEIROS LTDA",
+                    "paymentMethodConfigurationId": null,
+                    "requestedPaymentMethodTypes": [
+                      "card",
+                      "link"
+                    ],
+                    "livemode": true,
+                    "paymentStatus": "unpaid",
+                    "status": "open",
+                    "expiresAt": null,
+                    "webhookConfigured": true,
+                    "settlementMode": "internal",
+                    "balanceImpact": true
+                  }
                 }
               }
             }
@@ -104,6 +135,9 @@
           },
           "409": {
             "$ref": "#/components/responses/Conflict"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
           }
         }
       }
@@ -113,7 +147,7 @@
         "tags": [
           "Integrations"
         ],
-        "summary": "Listar transações",
+        "summary": "Listar transacoes",
         "parameters": [
           {
             "name": "id",
@@ -186,7 +220,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Transação única ou lista paginada",
+            "description": "Transacao unica ou lista paginada",
             "content": {
               "application/json": {
                 "schema": {
@@ -267,7 +301,7 @@
         "tags": [
           "Integrations"
         ],
-        "summary": "Aprovar saque (legado)",
+        "summary": "Aprovar saque legado",
         "requestBody": {
           "required": true,
           "content": {
@@ -414,6 +448,85 @@
         }
       }
     },
+    "/v1/integrations/stripe/config": {
+      "get": {
+        "tags": [
+          "Integrations"
+        ],
+        "summary": "Consultar configuracao publica da Stripe",
+        "responses": {
+          "200": {
+            "description": "Configuracao publica da Stripe para o frontend",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StripeConfigResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/v1/integrations/stripe/checkout-session": {
+      "get": {
+        "tags": [
+          "Integrations"
+        ],
+        "summary": "Consultar sessao Stripe",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transactionId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "sessionId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sessao Stripe sincronizada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StripeCheckoutSessionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
     "/v1/integrations/balance": {
       "get": {
         "tags": [
@@ -449,7 +562,7 @@
     },
     "responses": {
       "BadRequest": {
-        "description": "Requisição inválida",
+        "description": "Requisicao invalida",
         "content": {
           "application/json": {
             "schema": {
@@ -459,7 +572,7 @@
         }
       },
       "Unauthorized": {
-        "description": "Não autenticado",
+        "description": "Nao autenticado",
         "content": {
           "application/json": {
             "schema": {
@@ -469,7 +582,7 @@
         }
       },
       "Forbidden": {
-        "description": "Operação não permitida",
+        "description": "Operacao nao permitida",
         "content": {
           "application/json": {
             "schema": {
@@ -479,7 +592,7 @@
         }
       },
       "Conflict": {
-        "description": "Conflito de idempotência",
+        "description": "Conflito de idempotencia",
         "content": {
           "application/json": {
             "schema": {
@@ -489,7 +602,7 @@
         }
       },
       "NotFound": {
-        "description": "Recurso não encontrado",
+        "description": "Recurso nao encontrado",
         "content": {
           "application/json": {
             "schema": {
@@ -499,7 +612,7 @@
         }
       },
       "Unprocessable": {
-        "description": "Regra de negócio inválida",
+        "description": "Regra de negocio invalida",
         "content": {
           "application/json": {
             "schema": {
@@ -510,6 +623,16 @@
       },
       "BadGateway": {
         "description": "Falha no provedor externo",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "ServiceUnavailable": {
+        "description": "Servico indisponivel ou ambiente nao configurado",
         "content": {
           "application/json": {
             "schema": {
@@ -558,6 +681,44 @@
           "EVP"
         ]
       },
+      "AcquirerSlug": {
+        "type": "string",
+        "enum": [
+          "woovi",
+          "mercadopago",
+          "stripe"
+        ]
+      },
+      "CheckoutUiMode": {
+        "type": "string",
+        "enum": [
+          "hosted",
+          "embedded",
+          "custom"
+        ]
+      },
+      "TrackingParameters": {
+        "type": "object",
+        "nullable": true,
+        "additionalProperties": false,
+        "properties": {
+          "utm_source": {
+            "type": "string"
+          },
+          "utm_medium": {
+            "type": "string"
+          },
+          "utm_campaign": {
+            "type": "string"
+          },
+          "utm_content": {
+            "type": "string"
+          },
+          "utm_term": {
+            "type": "string"
+          }
+        }
+      },
       "CreateTransactionRequest": {
         "type": "object",
         "required": [
@@ -568,15 +729,15 @@
             "type": "number",
             "minimum": 0.01,
             "maximum": 1000000,
-            "description": "Valor bruto da cobrança em reais (ex.: 20.00)."
+            "description": "Valor bruto da cobranca."
           },
           "description": {
             "type": "string",
-            "description": "Descrição livre da cobrança."
+            "description": "Descricao livre da cobranca."
           },
           "productName": {
             "type": "string",
-            "description": "Nome do produto/serviço."
+            "description": "Nome do produto ou servico."
           },
           "clientName": {
             "type": "string",
@@ -585,7 +746,7 @@
           "clientEmail": {
             "type": "string",
             "format": "email",
-            "description": "E-mail do pagador."
+            "description": "Email do pagador."
           },
           "clientPhone": {
             "type": "string",
@@ -593,34 +754,78 @@
           },
           "clientCpf": {
             "type": "string",
-            "description": "CPF/CNPJ do pagador (somente números)."
+            "description": "Documento do pagador."
           },
           "tracking_parameters": {
-            "type": "object",
-            "description": "Parâmetros opcionais de tracking para conciliação e repasse via webhook.",
-            "additionalProperties": false,
-            "properties": {
-              "utm_source": {
-                "type": "string"
-              },
-              "utm_medium": {
-                "type": "string"
-              },
-              "utm_campaign": {
-                "type": "string"
-              },
-              "utm_content": {
-                "type": "string"
-              },
-              "utm_term": {
-                "type": "string"
-              }
-            }
+            "$ref": "#/components/schemas/TrackingParameters"
+          },
+          "utm_source": {
+            "type": "string"
+          },
+          "utm_medium": {
+            "type": "string"
+          },
+          "utm_campaign": {
+            "type": "string"
+          },
+          "utm_content": {
+            "type": "string"
+          },
+          "utm_term": {
+            "type": "string"
           },
           "referenceId": {
             "type": "string",
             "format": "uuid",
-            "description": "Chave de idempotência para CASHIN. Reutilize em retries da mesma cobrança."
+            "description": "Chave de idempotencia do merchant."
+          },
+          "acquirer": {
+            "$ref": "#/components/schemas/AcquirerSlug"
+          },
+          "paymentMethod": {
+            "type": "string",
+            "description": "Exemplo: credit_card, visa, master, bolbradesco."
+          },
+          "paymentMethodTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Somente Stripe. Exemplo: [\"card\"], [\"card\",\"link\"], [\"paypal\"]."
+          },
+          "cardToken": {
+            "type": "string",
+            "description": "Token de cartao usado em fluxos Mercado Pago."
+          },
+          "installments": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12
+          },
+          "currency": {
+            "type": "string",
+            "description": "Moeda ISO-4217. Default: brl."
+          },
+          "pixKeyType": {
+            "$ref": "#/components/schemas/PixKeyType"
+          },
+          "pixKey": {
+            "type": "string"
+          },
+          "checkoutUiMode": {
+            "$ref": "#/components/schemas/CheckoutUiMode"
+          },
+          "successUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "cancelUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "returnUrl": {
+            "type": "string",
+            "format": "uri"
           }
         }
       },
@@ -674,6 +879,85 @@
           }
         ]
       },
+      "AcquirerPublic": {
+        "type": "object",
+        "nullable": true,
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        }
+      },
+      "StripeCheckout": {
+        "type": "object",
+        "nullable": true,
+        "properties": {
+          "sessionId": {
+            "type": "string"
+          },
+          "uiMode": {
+            "$ref": "#/components/schemas/CheckoutUiMode"
+          },
+          "url": {
+            "type": "string",
+            "nullable": true
+          },
+          "clientSecret": {
+            "type": "string",
+            "nullable": true
+          },
+          "publishableKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "accountDisplayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentMethodConfigurationId": {
+            "type": "string",
+            "nullable": true
+          },
+          "requestedPaymentMethodTypes": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "livemode": {
+            "type": "boolean"
+          },
+          "paymentStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "expiresAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "webhookConfigured": {
+            "type": "boolean"
+          },
+          "settlementMode": {
+            "type": "string"
+          },
+          "balanceImpact": {
+            "type": "boolean"
+          }
+        }
+      },
       "TransactionPublic": {
         "type": "object",
         "properties": {
@@ -712,26 +996,7 @@
             "nullable": true
           },
           "trackingParameters": {
-            "type": "object",
-            "nullable": true,
-            "additionalProperties": false,
-            "properties": {
-              "utm_source": {
-                "type": "string"
-              },
-              "utm_medium": {
-                "type": "string"
-              },
-              "utm_campaign": {
-                "type": "string"
-              },
-              "utm_content": {
-                "type": "string"
-              },
-              "utm_term": {
-                "type": "string"
-              }
-            }
+            "$ref": "#/components/schemas/TrackingParameters"
           },
           "pixCode": {
             "type": "string",
@@ -769,6 +1034,10 @@
             "type": "string",
             "nullable": true
           },
+          "gatewayId": {
+            "type": "string",
+            "nullable": true
+          },
           "endToEndId": {
             "type": "string",
             "nullable": true
@@ -796,8 +1065,127 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
+          },
+          "acquirer": {
+            "$ref": "#/components/schemas/AcquirerPublic"
+          },
+          "balanceImpact": {
+            "type": "boolean"
+          },
+          "settlementMode": {
+            "type": "string"
           }
         }
+      },
+      "CreateTransactionResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TransactionPublic"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "stripeCheckout": {
+                "$ref": "#/components/schemas/StripeCheckout"
+              }
+            }
+          }
+        ]
+      },
+      "StripePublicConfig": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "publishableKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "supportedUiModes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckoutUiMode"
+            }
+          },
+          "defaultUiMode": {
+            "$ref": "#/components/schemas/CheckoutUiMode"
+          },
+          "defaultSuccessUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "defaultCancelUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "defaultReturnUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentMethodConfigurationId": {
+            "type": "string",
+            "nullable": true
+          },
+          "accountDisplayName": {
+            "type": "string"
+          },
+          "livemode": {
+            "type": "boolean"
+          },
+          "isWebhookConfigured": {
+            "type": "boolean"
+          },
+          "webhookEndpointUrl": {
+            "type": "string"
+          },
+          "isReadyForHostedCheckout": {
+            "type": "boolean"
+          },
+          "isReadyForSelfHostedCheckout": {
+            "type": "boolean"
+          },
+          "walletNotes": {
+            "type": "object",
+            "properties": {
+              "applePay": {
+                "type": "string"
+              },
+              "googlePay": {
+                "type": "string"
+              },
+              "link": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "StripeConfigResponse": {
+        "type": "object",
+        "properties": {
+          "stripe": {
+            "$ref": "#/components/schemas/StripePublicConfig"
+          }
+        },
+        "required": [
+          "stripe"
+        ]
+      },
+      "StripeCheckoutSessionResponse": {
+        "type": "object",
+        "properties": {
+          "transaction": {
+            "$ref": "#/components/schemas/TransactionPublic"
+          },
+          "stripeCheckout": {
+            "$ref": "#/components/schemas/StripeCheckout"
+          }
+        },
+        "required": [
+          "transaction",
+          "stripeCheckout"
+        ]
       },
       "CashoutCreatedResponse": {
         "allOf": [

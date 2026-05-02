@@ -1,0 +1,158 @@
+---
+title: "Cartao com Stripe"
+description: "Como gerar cobrancas de cartao via Stripe usando a AXNPAY."
+---
+
+## Como funciona
+
+No fluxo de cartao:
+
+`Cliente final -> AXNPAY -> Stripe -> AXNPAY -> webhook do merchant`
+
+Isso significa:
+
+- voce nao conecta uma conta Stripe propria
+- a AXNPAY e dona da conta Stripe
+- a AXNPAY recebe o callback da Stripe
+- a AXNPAY devolve o resultado normalizado para o webhook do merchant
+
+## Endpoints
+
+- `GET /v1/integrations/stripe/config`
+- `POST /v1/integrations/create-transaction`
+- `GET /v1/integrations/stripe/checkout-session`
+
+## Passo 1. Ler a configuracao publica da Stripe
+
+Use:
+
+```http
+GET /v1/integrations/stripe/config
+Authorization: Bearer sk_live_prod_<sua_secret_key>
+```
+
+Esse endpoint informa:
+
+- `publishableKey`
+- `supportedUiModes`
+- `defaultUiMode`
+- `isReadyForHostedCheckout`
+- `isReadyForSelfHostedCheckout`
+
+## Passo 2. Gerar a cobranca
+
+Use:
+
+```http
+POST /v1/integrations/create-transaction
+Authorization: Bearer sk_live_prod_<sua_secret_key>
+Content-Type: application/json
+```
+
+### Exemplo hosted
+
+```json
+{
+  "amount": 150,
+  "acquirer": "stripe",
+  "currency": "brl",
+  "productName": "Pedido #1001",
+  "description": "Plano Premium",
+  "clientName": "Maria",
+  "clientEmail": "maria@example.com",
+  "referenceId": "9e4a5fb4-61bb-4b38-9bb6-b7029b74bdf6",
+  "checkoutUiMode": "hosted",
+  "paymentMethodTypes": ["card", "link"],
+  "successUrl": "https://merchant.example.com/checkout/success",
+  "cancelUrl": "https://merchant.example.com/checkout/cancel",
+  "tracking_parameters": {
+    "utm_source": "google",
+    "utm_medium": "cpc",
+    "utm_campaign": "launch"
+  }
+}
+```
+
+### Exemplo self-hosted
+
+```json
+{
+  "amount": 150,
+  "acquirer": "stripe",
+  "currency": "brl",
+  "productName": "Pedido #1001",
+  "clientEmail": "maria@example.com",
+  "referenceId": "ef17ad6d-b9f7-4130-b0e9-4f7fd704b151",
+  "checkoutUiMode": "custom",
+  "paymentMethodTypes": ["card", "link"],
+  "returnUrl": "https://merchant.example.com/checkout/return"
+}
+```
+
+### Campos importantes
+
+- `acquirer: "stripe"`
+- `checkoutUiMode: "hosted" | "embedded" | "custom"`
+- `paymentMethodTypes`
+- `successUrl` e `cancelUrl` para hosted
+- `returnUrl` para embedded ou custom
+- `tracking_parameters` para UTMs
+
+### Wallets e metodos
+
+- Apple Pay: use `card`
+- Google Pay: use `card`
+- Link: adicione `link`
+- outros metodos como PayPal dependem da configuracao da conta Stripe da AXNPAY
+
+Exemplo:
+
+```json
+{
+  "paymentMethodTypes": ["card", "link"]
+}
+```
+
+## Passo 3. Interpretar a resposta
+
+Se for PIX, a resposta vem com `pixCode`.
+
+Se for Stripe, a resposta vem com `stripeCheckout`.
+
+### Campos mais importantes de `stripeCheckout`
+
+- `sessionId`
+- `uiMode`
+- `url` para redirect hosted
+- `clientSecret` para self-hosted
+- `publishableKey` para Stripe.js
+- `paymentStatus`
+- `status`
+
+## Passo 4. Consultar o status depois
+
+Use:
+
+```http
+GET /v1/integrations/stripe/checkout-session?transactionId=<uuid>
+```
+
+Voce tambem pode consultar por:
+
+- `sessionId`
+- `id` legado
+
+## Webhook final para o merchant
+
+No fluxo Stripe, a AXNPAY recebe o callback da Stripe e depois envia o evento para o webhook do merchant.
+
+O payload enviado pela AXNPAY pode incluir:
+
+- `provider: "stripe"`
+- `checkoutSessionId`
+- `paymentIntentId`
+- `trackingParameters`
+- `tracking_parameters`
+- campos planos `utm_*`
+
+Se voce usa cartao Stripe, trate a confirmacao oficial sempre pelo webhook da AXNPAY ou pelo status sincronizado em `/v1/integrations/stripe/checkout-session`.

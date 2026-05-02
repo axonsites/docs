@@ -1,44 +1,66 @@
 ---
 title: "Regras de contrato"
-description: "Contrato de integração para transações de entrada (CASHIN)."
+description: "Contrato de integracao para transacoes de entrada (CASHIN)."
 ---
 
 ## Identificadores
 
-- `transactionId` é o ID público (UUID) para conciliação.
-- `id` inteiro é legado e não deve ser usado como chave principal no cliente.
+- `transactionId` e o ID publico (UUID) para conciliacao.
+- `id` inteiro e legado e nao deve ser usado como chave principal no cliente.
 
-## Payload público de criação (PIX)
+## Payload publico de criacao
 
-No endpoint `POST /v1/integrations/create-transaction`, o contrato público usa:
+No endpoint `POST /v1/integrations/create-transaction`, o contrato publico usa:
 
-- `amount` (obrigatório)
+- `amount` obrigatorio
 - `description`, `productName`
 - `clientName`, `clientEmail`, `clientPhone`, `clientCpf`
 - `tracking_parameters` com `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`
-- `referenceId` (idempotência)
+- `referenceId` para idempotencia
+- `acquirer` quando quiser selecionar `stripe`
+- `checkoutUiMode`, `paymentMethodTypes`, `successUrl`, `cancelUrl` e `returnUrl` para cartao Stripe
 
-Campos internos como `acquirer`, `pixKey` e `pixKeyType` não fazem parte do contrato público de cobrança PIX.
+Para PIX, o retorno inclui `pixCode`.
 
-## Tracking e atribuição
+Para cartao Stripe, o retorno inclui `stripeCheckout`.
 
-Se enviados na criação da cobrança, os UTMs ficam salvos na transação e também são reenviados nos webhooks da AXNPAY dentro de `trackingParameters`.
+## Tracking e atribuicao
 
-## Status de transação
+Se enviados na criacao da cobranca, os UTMs ficam salvos na transacao e tambem sao reenviados nos webhooks da AXNPAY dentro de:
+
+- `trackingParameters`
+- `tracking_parameters`
+- campos planos `utm_*`
+
+## Status de transacao
 
 - `PENDING`: criada e aguardando pagamento.
-- `PROCESSING`: em processamento interno/provedor.
+- `PROCESSING`: em processamento interno ou no provedor.
 - `COMPLETED`: pagamento confirmado.
 - `FAILED`: falhou.
 - `REVERSED`: estornada.
 - `CANCELLED`: cancelada.
-- `CHARGEBACK`: chargeback/disputa.
+- `CHARGEBACK`: disputa ou chargeback.
 
 ## Campo `pixCode`
 
-Para PIX, a API retorna `pixCode` (copia e cola EMV).  
-Considere transação paga apenas quando `status = COMPLETED`.
+Para PIX, a API retorna `pixCode` no formato copia e cola EMV.
+Considere a transacao paga apenas quando `status = COMPLETED`.
+
+## Campo `stripeCheckout`
+
+Para cartao Stripe, a API retorna `stripeCheckout`.
+
+Os campos mais importantes sao:
+
+- `sessionId`
+- `uiMode`
+- `url` para checkout hosted
+- `clientSecret` para checkout self-hosted
+- `publishableKey` quando o fluxo exigir Stripe.js no frontend
+
+Veja o guia completo em [Cartao (Stripe)](/stripe-card).
 
 ## Privacidade de dados
 
-A resposta da Integrations API foi reduzida para expor apenas dados necessários ao integrador.
+A resposta da Integrations API expõe apenas os dados necessarios ao integrador.
