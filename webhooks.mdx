@@ -7,9 +7,9 @@ description: "Eventos da AXNPAY para o merchant e validacao de assinatura."
 
 A AXNPAY envia webhooks assinados para notificar mudancas de status de transacao e saque.
 
-No fluxo de cartao Stripe:
+No fluxo de cobranca:
 
-1. A Stripe chama o webhook interno da AXNPAY.
+1. A AXNPAY recebe a confirmacao do processador interno.
 2. A AXNPAY atualiza a transacao.
 3. A AXNPAY envia o webhook normalizado para o merchant.
 
@@ -43,9 +43,8 @@ Headers enviados:
     "referenceId": "e1de94c1-5692-48e1-a334-24b367ad76ff",
     "status": "COMPLETED",
     "type": "CASHIN",
-    "provider": "stripe",
-    "checkoutSessionId": "cs_live_xxx",
-    "paymentIntentId": "pi_xxx",
+    "checkoutSessionId": "checkout_sess_abc123",
+    "paymentIntentId": "payment_abc123",
     "trackingParameters": {
       "utm_source": "meta_ads",
       "utm_medium": "cpc",
@@ -105,5 +104,5 @@ Esses endpoints usam autenticacao JWT de usuario do painel, nao `sk_live_prod_*`
 - `POST /v1/user/webhooks/:id/revalidate`
 
 <Info>
-  Se voce estiver usando cartao Stripe, veja tambem [Cartao (Stripe)](/stripe-card).
+  Se voce estiver usando checkout de cartao, veja tambem [Cartao](/card-checkout).
 </Info>

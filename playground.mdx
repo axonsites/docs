@@ -1,6 +1,6 @@
 ---
 title: "Playground"
-description: "Como testar endpoints de integração direto na documentação."
+description: "Como testar endpoints de integracao direto na documentacao."
 ---
 
 ## Como usar
@@ -23,13 +23,13 @@ description: "Como testar endpoints de integração direto na documentação."
 
 - Use valores pequenos (`1.00`, `5.00`, `20.00`).
 - Gere UUID real para `referenceId` e `idempotencyKey`.
-- Guarde `transactionId` em log para conciliação.
-- Em `create-transaction` (PIX), não envie `acquirer`, `pixKey` ou `pixKeyType`.
-- Se precisar atribuição, envie `tracking_parameters` com seus UTMs no `create-transaction`.
-- Em `create-cashout`, envie `pixKeyType` válido: `CPF`, `CNPJ`, `EMAIL`, `PHONE`, `EVP`.
+- Guarde `transactionId` em log para conciliacao.
+- Em `create-transaction`, nao envie `acquirer` no fluxo padrao.
+- Se precisar atribuicao, envie `tracking_parameters` com seus UTMs no `create-transaction`.
+- Em `create-cashout`, envie `pixKeyType` valido: `CPF`, `CNPJ`, `EMAIL`, `PHONE`, `EVP`.
 
-## Segurança no playground
+## Seguranca no playground
 
 <Warning>
-  O playground roda no navegador. Use ambiente controlado para testes e rotacione chaves se necessário.
+  O playground roda no navegador. Use ambiente controlado para testes e rotacione chaves se necessario.
 </Warning>

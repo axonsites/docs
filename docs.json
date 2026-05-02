@@ -19,27 +19,27 @@
         ]
       },
       {
-        "group": "Guia de implementação",
+        "group": "Guia de implementacao",
         "pages": [
           "quickstart",
           "authentication",
-          "stripe-card",
+          "card-checkout",
           "webhooks"
         ]
       },
       {
-        "group": "Transações",
+        "group": "Transacoes",
         "pages": [
           "contract-transactions",
           "api-reference/endpoint/create-transaction",
-          "api-reference/endpoint/get-stripe-config",
-          "api-reference/endpoint/get-stripe-checkout-session",
+          "api-reference/endpoint/get-card-config",
+          "api-reference/endpoint/get-card-checkout-session",
           "api-reference/endpoint/list-transactions",
           "api-reference/endpoint/get-transaction"
         ]
       },
       {
-        "group": "Transferências",
+        "group": "Transferencias",
         "pages": [
           "contract-cashout",
           "api-reference/endpoint/create-cashout",
@@ -50,7 +50,7 @@
         ]
       },
       {
-        "group": "Referência",
+        "group": "Referencia",
         "pages": [
           "api-reference/introduction",
           "idempotency",
@@ -92,15 +92,15 @@
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {

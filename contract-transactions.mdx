@@ -17,12 +17,15 @@ No endpoint `POST /v1/integrations/create-transaction`, o contrato publico usa:
 - `clientName`, `clientEmail`, `clientPhone`, `clientCpf`
 - `tracking_parameters` com `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`
 - `referenceId` para idempotencia
-- `acquirer` quando quiser selecionar `stripe`
-- `checkoutUiMode`, `paymentMethodTypes`, `successUrl`, `cancelUrl` e `returnUrl` para cartao Stripe
+- `checkoutUiMode`, `paymentMethodTypes`, `successUrl`, `cancelUrl` e `returnUrl` para checkout de cartao
+
+<Info>
+  No fluxo padrao, nao envie `acquirer`. A AXNPAY escolhe automaticamente o processador ativo para PIX, boleto ou cartao.
+</Info>
 
 Para PIX, o retorno inclui `pixCode`.
 
-Para cartao Stripe, o retorno inclui `stripeCheckout`.
+Para cartao, o retorno inclui `checkout`.
 
 ## Tracking e atribuicao
 
@@ -47,9 +50,9 @@ Se enviados na criacao da cobranca, os UTMs ficam salvos na transacao e tambem s
 Para PIX, a API retorna `pixCode` no formato copia e cola EMV.
 Considere a transacao paga apenas quando `status = COMPLETED`.
 
-## Campo `stripeCheckout`
+## Campo `checkout`
 
-Para cartao Stripe, a API retorna `stripeCheckout`.
+Para checkout de cartao, a API retorna `checkout`.
 
 Os campos mais importantes sao:
 
@@ -57,10 +60,10 @@ Os campos mais importantes sao:
 - `uiMode`
 - `url` para checkout hosted
 - `clientSecret` para checkout self-hosted
-- `publishableKey` quando o fluxo exigir Stripe.js no frontend
+- `publishableKey` quando o fluxo exigir frontend dedicado
 
-Veja o guia completo em [Cartao (Stripe)](/stripe-card).
+Veja o guia completo em [Cartao](/card-checkout).
 
 ## Privacidade de dados
 
-A resposta da Integrations API expõe apenas os dados necessarios ao integrador.
+A resposta da Integrations API expoe apenas os dados necessarios ao integrador.

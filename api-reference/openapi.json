@@ -3,7 +3,7 @@
   "info": {
     "title": "AXNPAY Integrations API",
     "version": "2026-05-02",
-    "description": "Referencia publica para integracao de cobrancas, saques, conciliacao e checkout de cartao via Stripe."
+    "description": "Referencia publica para integracao de cobrancas, saques, conciliacao e checkout de cartao da AXNPAY."
   },
   "servers": [
     {
@@ -31,7 +31,6 @@
               },
               "example": {
                 "amount": 150,
-                "acquirer": "stripe",
                 "currency": "brl",
                 "productName": "Pedido #1001",
                 "description": "Plano Premium",
@@ -66,7 +65,7 @@
                   "transactionId": "9e4a5fb4-61bb-4b38-9bb6-b7029b74bdf6",
                   "status": "PENDING",
                   "type": "CASHIN",
-                  "source": "CARD",
+                  "source": "CREDIT_CARD",
                   "origin": "API",
                   "amount": 150,
                   "feeAmount": 0,
@@ -85,7 +84,7 @@
                   "clientEmail": "maria@example.com",
                   "clientPhone": null,
                   "clientCpf": null,
-                  "externalId": "cs_live_xxx",
+                  "externalId": "checkout_sess_abc123",
                   "gatewayId": null,
                   "endToEndId": null,
                   "receiptUrl": null,
@@ -93,17 +92,12 @@
                   "paidAt": null,
                   "createdAt": "2026-05-02T18:46:16.748Z",
                   "updatedAt": "2026-05-02T18:46:16.748Z",
-                  "acquirer": {
-                    "id": 3,
-                    "name": "Stripe",
-                    "slug": "stripe"
-                  },
                   "balanceImpact": true,
                   "settlementMode": "internal",
-                  "stripeCheckout": {
-                    "sessionId": "cs_live_xxx",
+                  "checkout": {
+                    "sessionId": "checkout_sess_abc123",
                     "uiMode": "hosted",
-                    "url": "https://checkout.stripe.com/c/pay/cs_live_xxx",
+                    "url": "https://checkout.axnpay.com/session/checkout_sess_abc123",
                     "clientSecret": null,
                     "publishableKey": null,
                     "accountDisplayName": "AXON SERVICOS FINANCEIROS LTDA",
@@ -448,19 +442,19 @@
         }
       }
     },
-    "/v1/integrations/stripe/config": {
+    "/v1/integrations/balance": {
       "get": {
         "tags": [
           "Integrations"
         ],
-        "summary": "Consultar configuracao publica da Stripe",
+        "summary": "Consultar saldo",
         "responses": {
           "200": {
-            "description": "Configuracao publica da Stripe para o frontend",
+            "description": "Saldo consolidado",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StripeConfigResponse"
+                  "$ref": "#/components/schemas/BalanceResponse"
                 }
               }
             }
@@ -471,12 +465,35 @@
         }
       }
     },
-    "/v1/integrations/stripe/checkout-session": {
+    "/v1/integrations/card/config": {
       "get": {
         "tags": [
           "Integrations"
         ],
-        "summary": "Consultar sessao Stripe",
+        "summary": "Consultar configuracao publica do checkout de cartao",
+        "responses": {
+          "200": {
+            "description": "Configuracao publica do checkout de cartao para o frontend",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardConfigResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/v1/integrations/card/checkout-session": {
+      "get": {
+        "tags": [
+          "Integrations"
+        ],
+        "summary": "Consultar checkout de cartao",
         "parameters": [
           {
             "name": "id",
@@ -503,11 +520,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Sessao Stripe sincronizada",
+            "description": "Sessao de checkout de cartao sincronizada",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StripeCheckoutSessionResponse"
+                  "$ref": "#/components/schemas/CardCheckoutSessionResponse"
                 }
               }
             }
@@ -523,29 +540,6 @@
           },
           "503": {
             "$ref": "#/components/responses/ServiceUnavailable"
-          }
-        }
-      }
-    },
-    "/v1/integrations/balance": {
-      "get": {
-        "tags": [
-          "Integrations"
-        ],
-        "summary": "Consultar saldo",
-        "responses": {
-          "200": {
-            "description": "Saldo consolidado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BalanceResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -681,14 +675,6 @@
           "EVP"
         ]
       },
-      "AcquirerSlug": {
-        "type": "string",
-        "enum": [
-          "woovi",
-          "mercadopago",
-          "stripe"
-        ]
-      },
       "CheckoutUiMode": {
         "type": "string",
         "enum": [
@@ -779,9 +765,6 @@
             "format": "uuid",
             "description": "Chave de idempotencia do merchant."
           },
-          "acquirer": {
-            "$ref": "#/components/schemas/AcquirerSlug"
-          },
           "paymentMethod": {
             "type": "string",
             "description": "Exemplo: credit_card, visa, master, bolbradesco."
@@ -791,7 +774,7 @@
             "items": {
               "type": "string"
             },
-            "description": "Somente Stripe. Exemplo: [\"card\"], [\"card\",\"link\"], [\"paypal\"]."
+            "description": "Usado quando o checkout web de cartao ativo suportar selecao de metodos no frontend. Exemplo: [\"card\"], [\"card\",\"link\"], [\"paypal\"]."
           },
           "cardToken": {
             "type": "string",
@@ -804,7 +787,7 @@
           },
           "currency": {
             "type": "string",
-            "description": "Moeda ISO-4217. Default: brl."
+            "description": "Moeda ISO-4217. Default: brl. A disponibilidade dos metodos depende do checkout ativo na conta."
           },
           "pixKeyType": {
             "$ref": "#/components/schemas/PixKeyType"
@@ -878,85 +861,6 @@
             ]
           }
         ]
-      },
-      "AcquirerPublic": {
-        "type": "object",
-        "nullable": true,
-        "properties": {
-          "id": {
-            "type": "integer"
-          },
-          "name": {
-            "type": "string"
-          },
-          "slug": {
-            "type": "string"
-          }
-        }
-      },
-      "StripeCheckout": {
-        "type": "object",
-        "nullable": true,
-        "properties": {
-          "sessionId": {
-            "type": "string"
-          },
-          "uiMode": {
-            "$ref": "#/components/schemas/CheckoutUiMode"
-          },
-          "url": {
-            "type": "string",
-            "nullable": true
-          },
-          "clientSecret": {
-            "type": "string",
-            "nullable": true
-          },
-          "publishableKey": {
-            "type": "string",
-            "nullable": true
-          },
-          "accountDisplayName": {
-            "type": "string",
-            "nullable": true
-          },
-          "paymentMethodConfigurationId": {
-            "type": "string",
-            "nullable": true
-          },
-          "requestedPaymentMethodTypes": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "type": "string"
-            }
-          },
-          "livemode": {
-            "type": "boolean"
-          },
-          "paymentStatus": {
-            "type": "string",
-            "nullable": true
-          },
-          "status": {
-            "type": "string",
-            "nullable": true
-          },
-          "expiresAt": {
-            "type": "string",
-            "nullable": true,
-            "format": "date-time"
-          },
-          "webhookConfigured": {
-            "type": "boolean"
-          },
-          "settlementMode": {
-            "type": "string"
-          },
-          "balanceImpact": {
-            "type": "boolean"
-          }
-        }
       },
       "TransactionPublic": {
         "type": "object",
@@ -1066,9 +970,6 @@
             "format": "date-time",
             "nullable": true
           },
-          "acquirer": {
-            "$ref": "#/components/schemas/AcquirerPublic"
-          },
           "balanceImpact": {
             "type": "boolean"
           },
@@ -1085,106 +986,11 @@
           {
             "type": "object",
             "properties": {
-              "stripeCheckout": {
-                "$ref": "#/components/schemas/StripeCheckout"
+              "checkout": {
+                "$ref": "#/components/schemas/CheckoutSession"
               }
             }
           }
-        ]
-      },
-      "StripePublicConfig": {
-        "type": "object",
-        "properties": {
-          "enabled": {
-            "type": "boolean"
-          },
-          "publishableKey": {
-            "type": "string",
-            "nullable": true
-          },
-          "supportedUiModes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CheckoutUiMode"
-            }
-          },
-          "defaultUiMode": {
-            "$ref": "#/components/schemas/CheckoutUiMode"
-          },
-          "defaultSuccessUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "defaultCancelUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "defaultReturnUrl": {
-            "type": "string",
-            "nullable": true
-          },
-          "paymentMethodConfigurationId": {
-            "type": "string",
-            "nullable": true
-          },
-          "accountDisplayName": {
-            "type": "string"
-          },
-          "livemode": {
-            "type": "boolean"
-          },
-          "isWebhookConfigured": {
-            "type": "boolean"
-          },
-          "webhookEndpointUrl": {
-            "type": "string"
-          },
-          "isReadyForHostedCheckout": {
-            "type": "boolean"
-          },
-          "isReadyForSelfHostedCheckout": {
-            "type": "boolean"
-          },
-          "walletNotes": {
-            "type": "object",
-            "properties": {
-              "applePay": {
-                "type": "string"
-              },
-              "googlePay": {
-                "type": "string"
-              },
-              "link": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      },
-      "StripeConfigResponse": {
-        "type": "object",
-        "properties": {
-          "stripe": {
-            "$ref": "#/components/schemas/StripePublicConfig"
-          }
-        },
-        "required": [
-          "stripe"
-        ]
-      },
-      "StripeCheckoutSessionResponse": {
-        "type": "object",
-        "properties": {
-          "transaction": {
-            "$ref": "#/components/schemas/TransactionPublic"
-          },
-          "stripeCheckout": {
-            "$ref": "#/components/schemas/StripeCheckout"
-          }
-        },
-        "required": [
-          "transaction",
-          "stripeCheckout"
         ]
       },
       "CashoutCreatedResponse": {
@@ -1308,6 +1114,173 @@
           "statusCode",
           "error",
           "message"
+        ]
+      },
+      "CheckoutSession": {
+        "type": "object",
+        "nullable": true,
+        "properties": {
+          "sessionId": {
+            "type": "string"
+          },
+          "uiMode": {
+            "$ref": "#/components/schemas/CheckoutUiMode"
+          },
+          "url": {
+            "type": "string",
+            "nullable": true
+          },
+          "clientSecret": {
+            "type": "string",
+            "nullable": true
+          },
+          "publishableKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "accountDisplayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentMethodConfigurationId": {
+            "type": "string",
+            "nullable": true
+          },
+          "requestedPaymentMethodTypes": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "livemode": {
+            "type": "boolean"
+          },
+          "paymentStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "expiresAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "webhookConfigured": {
+            "type": "boolean"
+          },
+          "settlementMode": {
+            "type": "string"
+          },
+          "balanceImpact": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CardCheckoutConfig": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "publishableKey": {
+            "type": "string",
+            "nullable": true
+          },
+          "supportedUiModes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckoutUiMode"
+            }
+          },
+          "defaultUiMode": {
+            "type": "string",
+            "enum": [
+              "hosted",
+              "embedded",
+              "custom"
+            ],
+            "nullable": true
+          },
+          "defaultSuccessUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "defaultCancelUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "defaultReturnUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentMethodConfigurationId": {
+            "type": "string",
+            "nullable": true
+          },
+          "accountDisplayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "livemode": {
+            "type": "boolean"
+          },
+          "isWebhookConfigured": {
+            "type": "boolean"
+          },
+          "webhookEndpointUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "isReadyForHostedCheckout": {
+            "type": "boolean"
+          },
+          "isReadyForSelfHostedCheckout": {
+            "type": "boolean"
+          },
+          "walletNotes": {
+            "type": "object",
+            "properties": {
+              "applePay": {
+                "type": "string"
+              },
+              "googlePay": {
+                "type": "string"
+              },
+              "link": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "CardConfigResponse": {
+        "type": "object",
+        "properties": {
+          "checkout": {
+            "$ref": "#/components/schemas/CardCheckoutConfig"
+          }
+        },
+        "required": [
+          "checkout"
+        ]
+      },
+      "CardCheckoutSessionResponse": {
+        "type": "object",
+        "properties": {
+          "transaction": {
+            "$ref": "#/components/schemas/TransactionPublic"
+          },
+          "checkout": {
+            "$ref": "#/components/schemas/CheckoutSession"
+          }
+        },
+        "required": [
+          "transaction",
+          "checkout"
         ]
       }
     }

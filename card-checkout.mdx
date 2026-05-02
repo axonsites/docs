@@ -1,37 +1,37 @@
 ---
-title: "Cartao com Stripe"
-description: "Como gerar cobrancas de cartao via Stripe usando a AXNPAY."
+title: "Cartao"
+description: "Como gerar cobrancas de cartao pela AXNPAY sem precisar escolher a adquirente no payload."
 ---
 
 ## Como funciona
 
 No fluxo de cartao:
 
-`Cliente final -> AXNPAY -> Stripe -> AXNPAY -> webhook do merchant`
+`Cliente final -> AXNPAY -> checkout ativo -> AXNPAY -> webhook do merchant`
 
 Isso significa:
 
-- voce nao conecta uma conta Stripe propria
-- a AXNPAY e dona da conta Stripe
-- a AXNPAY recebe o callback da Stripe
-- a AXNPAY devolve o resultado normalizado para o webhook do merchant
+- voce nao precisa enviar `acquirer` no fluxo normal
+- a AXNPAY identifica o checkout de cartao ativo na sua conta
+- o frontend recebe apenas configuracoes publicas e dados seguros
+- a confirmacao oficial continua chegando pelo webhook da AXNPAY
 
 ## Endpoints
 
-- `GET /v1/integrations/stripe/config`
+- `GET /v1/integrations/card/config`
 - `POST /v1/integrations/create-transaction`
-- `GET /v1/integrations/stripe/checkout-session`
+- `GET /v1/integrations/card/checkout-session`
 
-## Passo 1. Ler a configuracao publica da Stripe
+## Passo 1. Ler a configuracao publica do checkout
 
 Use:
 
 ```http
-GET /v1/integrations/stripe/config
+GET /v1/integrations/card/config
 Authorization: Bearer sk_live_prod_<sua_secret_key>
 ```
 
-Esse endpoint informa:
+Esse endpoint informa, quando o checkout web estiver disponivel:
 
 - `publishableKey`
 - `supportedUiModes`
@@ -54,7 +54,6 @@ Content-Type: application/json
 ```json
 {
   "amount": 150,
-  "acquirer": "stripe",
   "currency": "brl",
   "productName": "Pedido #1001",
   "description": "Plano Premium",
@@ -78,7 +77,6 @@ Content-Type: application/json
 ```json
 {
   "amount": 150,
-  "acquirer": "stripe",
   "currency": "brl",
   "productName": "Pedido #1001",
   "clientEmail": "maria@example.com",
@@ -91,7 +89,7 @@ Content-Type: application/json
 
 ### Campos importantes
 
-- `acquirer: "stripe"`
+- nao envie `acquirer` no fluxo padrao
 - `checkoutUiMode: "hosted" | "embedded" | "custom"`
 - `paymentMethodTypes`
 - `successUrl` e `cancelUrl` para hosted
@@ -103,7 +101,7 @@ Content-Type: application/json
 - Apple Pay: use `card`
 - Google Pay: use `card`
 - Link: adicione `link`
-- outros metodos como PayPal dependem da configuracao da conta Stripe da AXNPAY
+- wallets adicionais aparecem automaticamente quando o checkout ativo suportar o metodo
 
 Exemplo:
 
@@ -117,15 +115,15 @@ Exemplo:
 
 Se for PIX, a resposta vem com `pixCode`.
 
-Se for Stripe, a resposta vem com `stripeCheckout`.
+Se for cartao, a resposta vem com `checkout`.
 
-### Campos mais importantes de `stripeCheckout`
+### Campos mais importantes de `checkout`
 
 - `sessionId`
 - `uiMode`
 - `url` para redirect hosted
 - `clientSecret` para self-hosted
-- `publishableKey` para Stripe.js
+- `publishableKey` para o frontend
 - `paymentStatus`
 - `status`
 
@@ -134,7 +132,7 @@ Se for Stripe, a resposta vem com `stripeCheckout`.
 Use:
 
 ```http
-GET /v1/integrations/stripe/checkout-session?transactionId=<uuid>
+GET /v1/integrations/card/checkout-session?transactionId=<uuid>
 ```
 
 Voce tambem pode consultar por:
@@ -144,15 +142,14 @@ Voce tambem pode consultar por:
 
 ## Webhook final para o merchant
 
-No fluxo Stripe, a AXNPAY recebe o callback da Stripe e depois envia o evento para o webhook do merchant.
+No fluxo de cartao, a AXNPAY recebe o retorno interno do checkout e depois envia o evento para o webhook do merchant.
 
 O payload enviado pela AXNPAY pode incluir:
 
-- `provider: "stripe"`
 - `checkoutSessionId`
 - `paymentIntentId`
 - `trackingParameters`
 - `tracking_parameters`
 - campos planos `utm_*`
 
-Se voce usa cartao Stripe, trate a confirmacao oficial sempre pelo webhook da AXNPAY ou pelo status sincronizado em `/v1/integrations/stripe/checkout-session`.
+Trate a confirmacao oficial sempre pelo webhook da AXNPAY ou pelo status sincronizado em `/v1/integrations/card/checkout-session`.
